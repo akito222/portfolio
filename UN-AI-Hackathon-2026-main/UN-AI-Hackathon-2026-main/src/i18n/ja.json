@@ -1,0 +1,128 @@
+{
+  "nav": {
+    "dashboard": "ダッシュボード",
+    "search": "法令検索",
+    "audit": "監査ビュー",
+    "mapping": "Pillarマッピング",
+    "title": "UN Trade AI"
+  },
+  "dashboard": {
+    "title": "ダッシュボード",
+    "subtitle": "デジタル貿易に関する規制文書のAI解析システム",
+    "stats": {
+      "documents": "収集済み文書数",
+      "countries": "対象国数",
+      "citations": "マッピング済み条文数",
+      "reviewed": "レビュー済み引用数"
+    },
+    "recent": {
+      "title": "最近追加された文書",
+      "country": "国",
+      "document": "文書名",
+      "pillar": "Pillar",
+      "score": "信頼スコア",
+      "status": "ステータス",
+      "crawled": "収集日"
+    },
+    "system": {
+      "title": "システムステータス",
+      "crawlerStatus": "クローラー",
+      "indexStatus": "インデックス",
+      "apiStatus": "API",
+      "operational": "稼働中",
+      "indexed": "インデックス済み"
+    }
+  },
+  "search": {
+    "title": "法令文書検索",
+    "subtitle": "UN RDTII基準にマッピングされた規制文書を検索・閲覧",
+    "placeholder": "キーワード・条番号・概念で検索...",
+    "filters": {
+      "country": "国",
+      "allCountries": "すべての国",
+      "language": "言語",
+      "allLanguages": "すべての言語",
+      "pillar": "Pillar",
+      "allPillars": "すべてのPillar"
+    },
+    "results": {
+      "found": "件の結果",
+      "noResults": "結果が見つかりませんでした。別のキーワードを試してください。",
+      "confidence": "信頼スコア",
+      "indicator": "インジケーター",
+      "method": "発見方法",
+      "reviewed": "レビュー済み",
+      "article": "条番号",
+      "document": "文書"
+    },
+    "modal": {
+      "title": "引用詳細",
+      "originalText": "原文テキスト",
+      "englishText": "英訳",
+      "sourceDocument": "原典文書",
+      "close": "閉じる"
+    }
+  },
+  "audit": {
+    "title": "監査ビュー",
+    "subtitle": "AIが抽出した引用を人間がレビューします",
+    "snippet": {
+      "title": "抽出スニペット",
+      "pillarTag": "Pillarタグ",
+      "indicator": "インジケーター",
+      "confidence": "信頼スコア",
+      "method": "発見方法",
+      "original": "原文",
+      "english": "英語"
+    },
+    "source": {
+      "title": "元文書プレビュー",
+      "highlight": "ハイライト箇所"
+    },
+    "review": {
+      "approve": "承認",
+      "flag": "フラグを立てる",
+      "approved": "承認済み",
+      "flagged": "フラグ済み",
+      "status": "レビューステータス",
+      "pending": "レビュー待ち"
+    },
+    "navigation": {
+      "previous": "前へ",
+      "next": "次へ",
+      "of": "/"
+    }
+  },
+  "mapping": {
+    "title": "Pillarマッピング結果",
+    "subtitle": "UN RDTII基準への各国対応状況",
+    "export": "CSVエクスポート",
+    "table": {
+      "country": "国",
+      "pillar6": "Pillar 6",
+      "pillar7": "Pillar 7",
+      "documents": "文書数",
+      "citations": "引用数",
+      "details": "詳細"
+    },
+    "status": {
+      "compliant": "対応済み",
+      "partial": "一部対応",
+      "missing": "データなし"
+    },
+    "detail": {
+      "article": "条番号",
+      "indicator": "インジケーター",
+      "confidence": "信頼スコア"
+    }
+  },
+  "common": {
+    "loading": "読み込み中...",
+    "error": "データの読み込みに失敗しました",
+    "language": "言語",
+    "semantic": "セマンティック",
+    "keyword": "キーワード",
+    "yes": "はい",
+    "no": "いいえ"
+  }
+}

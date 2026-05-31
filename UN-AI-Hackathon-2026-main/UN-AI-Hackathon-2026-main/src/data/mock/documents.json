@@ -1,0 +1,62 @@
+[
+  {
+    "id": "doc_001",
+    "country": "Japan",
+    "country_code": "JP",
+    "language": "ja",
+    "title": "個人情報の保護に関する法律",
+    "title_en": "Act on the Protection of Personal Information",
+    "source_url": "https://laws.e-gov.go.jp/law/415AC0000000057",
+    "crawled_at": "2026-05-10",
+    "pillar": "Pillar 7",
+    "status": "indexed"
+  },
+  {
+    "id": "doc_002",
+    "country": "Thailand",
+    "country_code": "TH",
+    "language": "th",
+    "title": "พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล",
+    "title_en": "Personal Data Protection Act B.E. 2562",
+    "source_url": "https://www.ratchakitcha.soc.go.th",
+    "crawled_at": "2026-05-09",
+    "pillar": "Pillar 7",
+    "status": "indexed"
+  },
+  {
+    "id": "doc_003",
+    "country": "Kenya",
+    "country_code": "KE",
+    "language": "en",
+    "title": "Data Protection Act, 2019",
+    "title_en": "Data Protection Act, 2019",
+    "source_url": "https://www.kenyalaw.org",
+    "crawled_at": "2026-05-08",
+    "pillar": "Pillar 7",
+    "status": "indexed"
+  },
+  {
+    "id": "doc_004",
+    "country": "Singapore",
+    "country_code": "SG",
+    "language": "en",
+    "title": "Personal Data Protection Act 2012",
+    "title_en": "Personal Data Protection Act 2012",
+    "source_url": "https://sso.agc.gov.sg",
+    "crawled_at": "2026-05-07",
+    "pillar": "Pillar 6",
+    "status": "indexed"
+  },
+  {
+    "id": "doc_005",
+    "country": "Brazil",
+    "country_code": "BR",
+    "language": "pt",
+    "title": "Lei Geral de Proteção de Dados",
+    "title_en": "General Data Protection Law (LGPD)",
+    "source_url": "https://www.planalto.gov.br",
+    "crawled_at": "2026-05-06",
+    "pillar": "Pillar 7",
+    "status": "indexed"
+  }
+]

@@ -1,0 +1,7 @@
+temp_uploads/
+__pycache__/
+*.pyc
+*.zip
+node_modules/
+.next/
+.DS_Store

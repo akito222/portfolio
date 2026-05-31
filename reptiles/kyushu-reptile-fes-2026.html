@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>九州爬虫類フェス 2026 | マリンメッセ福岡B館</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Antique+Soft&family=Noto+Sans+JP:wght@400;700;900&family=Oswald:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark: #ffffff;
+    --green-deep: #e8f5e9;
+    --green-mid: #2e7d32;
+    --green-bright: #388e3c;
+    --gold: #1b5e20;
+    --amber: #2e7d32;
+    --cream: #1b5e20;
+    --rust: #c62828;
+    --sand: #4caf50;
+    --text-light: #1a1a1a;
+    --text-dim: #555555;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:#ffffff; color:#1a1a1a; font-family:'Noto Sans JP',sans-serif; overflow-x:hidden; }
+
+  /* NAV */
+  nav { position:fixed; top:0; left:0; right:0; z-index:500; padding:1rem 2rem; display:flex; align-items:center; justify-content:space-between; transition:all .3s; }
+  nav.scrolled { background:rgba(255,255,255,.95); backdrop-filter:blur(10px); border-bottom:1px solid rgba(56,142,60,.2); box-shadow:0 2px 12px rgba(0,0,0,.06); padding:.7rem 2rem; }
+  .nav-logo { font-family:'Zen Antique Soft',serif; font-size:1rem; color:#1a1a1a; text-decoration:none; opacity:0; transition:opacity .3s; }
+  nav.scrolled .nav-logo { opacity:1; }
+  .nav-links { display:flex; gap:2rem; list-style:none; }
+  .nav-links a { color:#555555; text-decoration:none; font-size:.85rem; letter-spacing:2px; transition:color .2s; }
+  .nav-links a:hover { color:#2e7d32; }
+  @media(max-width:600px){ .nav-links{display:none;} }
+
+  /* HERO */
+  .hero { position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; background:radial-gradient(ellipse at 30% 40%,#c8e6c9 0%,#e8f5e9 50%,#f1f8e9 100%); }
+  .hero-bg { position:absolute; inset:0; background-image:radial-gradient(circle at 20% 80%,rgba(56,142,60,.15) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(27,94,32,.08) 0%,transparent 40%),radial-gradient(circle at 60% 70%,rgba(76,175,42,.12) 0%,transparent 40%); }
+  .leaf { position:absolute; width:80px; height:80px; opacity:.15; animation:sway 6s ease-in-out infinite; }
+  .leaf svg { width:100%; height:100%; }
+  .leaf:nth-child(1){top:5%;left:5%;animation-delay:0s}
+  .leaf:nth-child(2){top:15%;right:8%;animation-delay:-2s;transform:scaleX(-1)}
+  .leaf:nth-child(3){bottom:20%;left:3%;animation-delay:-4s;transform:rotate(45deg)}
+  .leaf:nth-child(4){bottom:10%;right:5%;animation-delay:-1s;transform:scaleX(-1) rotate(30deg)}
+  .leaf:nth-child(5){top:45%;left:1%;animation-delay:-3s}
+  .leaf:nth-child(6){top:40%;right:2%;animation-delay:-5s;transform:scaleX(-1)}
+  @keyframes sway{0%,100%{transform:rotate(-5deg) translateY(0)}50%{transform:rotate(5deg) translateY(-10px)}}
+  .hero-content { position:relative; z-index:10; text-align:center; padding:2rem; animation:fadeInUp 1s ease forwards; }
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+  .hero-badge { display:inline-block; background:#2e7d32; color:#ffffff; font-family:'Oswald',sans-serif; font-size:.85rem; letter-spacing:4px; padding:6px 20px; margin-bottom:1.5rem; clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%); }
+  .hero-title { font-family:'Zen Antique Soft',serif; font-size:clamp(2.8rem,8vw,6rem); line-height:1.1; color:#1b5e20; text-shadow:0 2px 12px rgba(56,142,60,.2); margin-bottom:.3rem; }
+  .hero-title span { display:block; font-family:'Oswald',sans-serif; font-size:clamp(3.5rem,10vw,8rem); color:#2e7d32; text-shadow:0 2px 8px rgba(46,125,50,.2); letter-spacing:-2px; }
+  .hero-subtitle { font-family:'Oswald',sans-serif; font-size:clamp(.9rem,2vw,1.2rem); letter-spacing:6px; color:#388e3c; margin-bottom:2.5rem; }
+  .hero-meta { display:flex; gap:2rem; justify-content:center; flex-wrap:wrap; margin-bottom:3rem; }
+  .hero-meta-item { text-align:center; border:1px solid rgba(56,142,60,.3); padding:1rem 1.5rem; background:rgba(255,255,255,.85); backdrop-filter:blur(10px); box-shadow:0 2px 12px rgba(56,142,60,.08); }
+  .hero-meta-label { font-size:.7rem; letter-spacing:3px; color:#388e3c; margin-bottom:.3rem; }
+  .hero-meta-value { font-size:1.1rem; font-weight:700; color:#1a1a1a; }
+  .hero-cta-group { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+  .btn-primary { display:inline-block; background:#2e7d32; color:#ffffff; font-family:'Noto Sans JP',sans-serif; font-weight:900; font-size:1rem; padding:1rem 2.5rem; text-decoration:none; clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%); transition:all .3s; letter-spacing:2px; }
+  .btn-primary:hover { background:#1b5e20; transform:translateY(-3px); box-shadow:0 10px 30px rgba(46,125,50,.3); }
+  .btn-secondary { display:inline-block; border:2px solid #388e3c; color:#388e3c; font-weight:700; font-size:1rem; padding:1rem 2.5rem; text-decoration:none; transition:all .3s; letter-spacing:2px; }
+  .btn-secondary:hover { background:#388e3c; color:#ffffff; transform:translateY(-3px); }
+  .scroll-indicator { position:absolute; bottom:2rem; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:.5rem; color:#555555; font-size:.7rem; letter-spacing:3px; animation:bounce 2s ease-in-out infinite; }
+  @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+
+  /* ALERT */
+  .alert-banner { background:linear-gradient(90deg,var(--rust),#a93226,var(--rust)); background-size:200% 100%; animation:shimmer 3s linear infinite; padding:1rem 2rem; text-align:center; font-weight:700; font-size:.95rem; letter-spacing:1px; }
+  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  .alert-banner span { color:#ffeb3b; font-weight:900; }
+
+  /* SECTIONS */
+  section { padding:6rem 2rem; max-width:1400px; margin:0 auto; }
+  .section-label { font-family:'Oswald',sans-serif; font-size:.75rem; letter-spacing:6px; color:#388e3c; margin-bottom:.8rem; text-transform:uppercase; }
+  .section-title { font-family:'Zen Antique Soft',serif; font-size:clamp(1.8rem,4vw,3rem); color:#1a1a1a; margin-bottom:1rem; line-height:1.2; }
+  .section-title em { color:#1b5e20; font-style:normal; }
+  .divider { width:60px; height:3px; background:linear-gradient(90deg,#4caf50,#2e7d32); margin-bottom:3rem; }
+
+  /* STATS */
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:rgba(56,142,60,.1); border:1px solid rgba(56,142,60,.15); margin-bottom:4rem; }
+  @media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr);}}
+  .stat-item { background:#ffffff; padding:2rem 1rem; text-align:center; border:1px solid rgba(56,142,60,.08); }
+  .stat-num { font-family:'Oswald',sans-serif; font-size:2.8rem; font-weight:700; color:#2e7d32; line-height:1; margin-bottom:.4rem; }
+  .stat-num sup { font-size:1.2rem; color:#4caf50; }
+  .stat-label { font-size:.75rem; color:#555555; letter-spacing:2px; }
+
+  /* HIGHLIGHTS */
+  .highlights-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-top:3rem; }
+  .highlight-card { background:#ffffff; border:1px solid rgba(56,142,60,.15); border-left:4px solid #4caf50; box-shadow:0 2px 12px rgba(56,142,60,.06); padding:2rem; transition:all .3s; position:relative; overflow:hidden; }
+  .highlight-card::before { content:''; position:absolute; top:0; right:0; width:100px; height:100px; background:radial-gradient(circle,rgba(76,175,42,.06),transparent); pointer-events:none; }
+  .highlight-card:hover { border-left-color:#2e7d32; transform:translateY(-4px); box-shadow:0 12px 32px rgba(56,142,60,.12); }
+  .highlight-icon { font-size:2.5rem; margin-bottom:1rem; }
+  .highlight-title { font-weight:900; font-size:1.1rem; color:#2e7d32; margin-bottom:.7rem; }
+  .highlight-text { color:#555555; font-size:.9rem; line-height:1.7; }
+  .highlight-text strong { color:#1a1a1a; }
+
+  /* PARKING */
+  .parking-section { background:linear-gradient(135deg,rgba(198,40,40,.06),rgba(255,255,255,1)); border:2px solid rgba(198,40,40,.25); padding:3rem; margin:4rem 0; position:relative; }
+  .parking-section::before { content:'⚠️ 駐車場情報（重要）'; position:absolute; top:-1px; left:2rem; background:#c62828; color:white; font-weight:700; font-size:.85rem; padding:4px 16px; letter-spacing:2px; }
+  .parking-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-top:1.5rem; }
+  @media(max-width:640px){.parking-grid{grid-template-columns:1fr;}}
+  .parking-warning { background:rgba(198,40,40,.05); border-left:4px solid #c62828; padding:1.5rem; }
+  .parking-tip { background:rgba(76,175,42,.06); border-left:4px solid #4caf50; padding:1.5rem; }
+  .parking-tip h4,.parking-warning h4 { font-size:1rem; font-weight:900; margin-bottom:.8rem; color:#1a1a1a; }
+  .parking-tip ul,.parking-warning ul { list-style:none; font-size:.9rem; color:var(--text-dim); line-height:2; }
+
+  /* EVENTS */
+  .events-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:1.5rem; }
+  .event-card { background:#ffffff; border:1px solid rgba(56,142,60,.15); box-shadow:0 2px 8px rgba(56,142,60,.06); padding:2rem; position:relative; overflow:hidden; transition:all .3s; }
+  .event-card:hover { border-color:rgba(46,125,50,.4); transform:translateY(-4px); box-shadow:0 8px 24px rgba(56,142,60,.12); }
+  .event-number { position:absolute; top:1.5rem; right:1.5rem; font-family:'Oswald',sans-serif; font-size:3rem; color:rgba(56,142,60,.08); font-weight:700; line-height:1; }
+  .event-tag { display:inline-block; background:#e8f5e9; border:1px solid #a5d6a7; color:#2e7d32; font-size:.7rem; padding:3px 10px; letter-spacing:2px; margin-bottom:1rem; }
+  .event-card h3 { font-size:1.2rem; font-weight:900; color:#1a1a1a; margin-bottom:.5rem; line-height:1.3; }
+  .event-card h3 em { color:#2e7d32; font-style:normal; }
+  .event-time { color:#388e3c; font-size:.85rem; font-weight:700; margin-bottom:.8rem; letter-spacing:1px; }
+  .event-desc { color:#555555; font-size:.85rem; line-height:1.7; }
+
+  /* GOURMET */
+  .gourmet-section { background:linear-gradient(135deg,#e8f5e9,#f1f8e9); border-top:2px solid rgba(56,142,60,.2); border-bottom:2px solid rgba(56,142,60,.2); padding:6rem 2rem; }
+  .gourmet-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin-top:2rem; }
+  .gourmet-item { text-align:center; padding:1.5rem 1rem; border:1px solid rgba(56,142,60,.15); background:#ffffff; box-shadow:0 2px 8px rgba(56,142,60,.06); transition:all .3s; }
+  .gourmet-item:hover { border-color:#2e7d32; background:rgba(56,142,60,.06); }
+  .gourmet-item .icon { font-size:2.5rem; margin-bottom:.8rem; }
+  .gourmet-item h4 { color:#2e7d32; font-size:.95rem; margin-bottom:.4rem; }
+  .gourmet-item p { color:var(--text-dim); font-size:.8rem; line-height:1.5; }
+
+  /* TICKET / ACCESS */
+  .ticket-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.5rem; max-width:900px; margin:2rem 0; }
+  .ticket-card { border:2px solid rgba(56,142,60,.2); padding:2rem 1.5rem; background:#ffffff; box-shadow:0 2px 8px rgba(56,142,60,.06); }
+  .ticket-card.primary { border-color:#2e7d32; background:#e8f5e9; }
+  .ticket-type { font-size:.75rem; letter-spacing:3px; color:#555555; margin-bottom:.8rem; }
+  .ticket-price { font-family:'Oswald',sans-serif; font-size:2.8rem; font-weight:700; color:#2e7d32; line-height:1; margin-bottom:.3rem; }
+  .ticket-price small { font-size:1rem; color:#555555; }
+  .ticket-note { font-size:.8rem; color:#555555; margin-top:.8rem; line-height:1.6; }
+  .access-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+  @media(max-width:768px){.access-grid{grid-template-columns:1fr;}}
+  .access-card { background:#ffffff; border:1px solid rgba(56,142,60,.15); box-shadow:0 2px 8px rgba(56,142,60,.06); padding:2rem; }
+  .access-card h3 { color:#2e7d32; font-size:1rem; margin-bottom:1rem; letter-spacing:2px; }
+  .access-card p { color:#444444; font-size:.9rem; line-height:1.8; }
+
+  /* EXHIBITORS */
+  .exhibitor-controls { display:flex; gap:.8rem; flex-wrap:wrap; margin-bottom:2rem; align-items:center; }
+  .filter-btn { background:#ffffff; border:1px solid rgba(56,142,60,.3); color:#555555; padding:.5rem 1.2rem; font-size:.85rem; cursor:pointer; font-family:'Noto Sans JP',sans-serif; transition:all .2s; letter-spacing:1px; }
+  .filter-btn.active,.filter-btn:hover { background:var(--green-mid); border-color:#388e3c; color:#1a1a1a; }
+  .search-box { background:rgba(26,58,18,.3); border:1px solid rgba(76,175,42,.3); color:#1a1a1a; padding:.5rem 1.2rem; font-size:.9rem; font-family:'Noto Sans JP',sans-serif; outline:none; width:240px; margin-left:auto; }
+  .search-box:focus { border-color:#388e3c; }
+  .search-box::placeholder { color:#aaaaaa; }
+  .exhibitors-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:.6rem; }
+  .exhibitor-card { background:#ffffff; border:1px solid rgba(56,142,60,.15); box-shadow:0 1px 4px rgba(56,142,60,.06); padding:.9rem 1rem; cursor:pointer; transition:all .2s; position:relative; }
+  .exhibitor-card:hover { background:#e8f5e9; border-color:rgba(56,142,60,.4); transform:translateY(-2px); }
+  .exhibitor-card.featured { border-color:rgba(27,94,32,.3); background:#f1f8e9; }
+  .exhibitor-card.featured:hover { border-color:#1b5e20; background:#e8f5e9; }
+  .exhibitor-card.local { border-left:3px solid #4caf50; }
+  .exhibitor-num { font-size:.65rem; color:#888888; letter-spacing:1px; margin-bottom:.3rem; }
+  .exhibitor-name { font-size:.85rem; font-weight:700; color:#1a1a1a; line-height:1.3; }
+  .exhibitor-card.featured .exhibitor-name { color:#1b5e20; }
+  .exhibitor-tag { font-size:.65rem; color:#388e3c; margin-top:.3rem; }
+  .has-link::after { content:'→'; position:absolute; bottom:.6rem; right:.8rem; font-size:.75rem; color:#388e3c; opacity:.6; }
+
+  /* MODAL */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:1000; align-items:center; justify-content:center; padding:1rem; backdrop-filter:blur(4px); }
+  .modal-overlay.open { display:flex; }
+  .modal { background:#ffffff; border:1px solid rgba(56,142,60,.2); box-shadow:0 8px 40px rgba(0,0,0,.15); max-width:580px; width:100%; max-height:82vh; overflow-y:auto; position:relative; animation:modalIn .3s ease; }
+  @keyframes modalIn{from{opacity:0;transform:scale(.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+  .modal-header { padding:2rem 2rem 1.5rem; border-bottom:1px solid rgba(56,142,60,.15); position:sticky; top:0; background:#ffffff; z-index:1; }
+  .modal-num { font-size:.7rem; letter-spacing:3px; color:#388e3c; margin-bottom:.4rem; }
+  .modal-name { font-size:1.5rem; font-weight:900; color:#1a1a1a; line-height:1.2; }
+  .modal-close { position:absolute; top:1.5rem; right:1.5rem; background:none; border:1px solid rgba(56,142,60,.3); color:#888888; width:36px; height:36px; cursor:pointer; font-size:1.2rem; display:flex; align-items:center; justify-content:center; transition:all .2s; }
+  .modal-close:hover { border-color:#388e3c; color:#1a1a1a; }
+  .modal-body { padding:2rem; }
+  .modal-desc { color:#444444; font-size:.9rem; line-height:1.8; margin-bottom:1.5rem; background:rgba(255,255,255,.03); padding:1.2rem; border-left:3px solid rgba(76,175,42,.3); }
+  .modal-links { display:flex; gap:.8rem; flex-wrap:wrap; }
+  .modal-link { display:inline-flex; align-items:center; gap:.4rem; background:#e8f5e9; border:1px solid rgba(56,142,60,.3); color:#2e7d32; text-decoration:none; padding:.6rem 1.2rem; font-size:.85rem; transition:all .2s; font-weight:700; }
+  .modal-link:hover { background:var(--green-mid); border-color:#388e3c; color:#1a1a1a; }
+  .modal-link.gold { border-color:rgba(27,94,32,.4); color:#1b5e20; }
+  .modal-link.gold:hover { background:#e8f5e9; border-color:#1b5e20; }
+  .modal-tags { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.2rem; }
+  .modal-tag { font-size:.7rem; background:#e8f5e9; border:1px solid rgba(56,142,60,.3); color:#2e7d32; padding:3px 10px; letter-spacing:1px; }
+
+  /* FOOTER */
+  footer { background:#1b5e20; border-top:1px solid rgba(255,255,255,.1); padding:4rem 2rem 2rem; text-align:center; }
+  .footer-logo { font-family:'Zen Antique Soft',serif; font-size:1.5rem; color:#1a1a1a; margin-bottom:.5rem; }
+  .footer-links { display:flex; gap:2rem; justify-content:center; flex-wrap:wrap; margin:2rem 0; }
+  .footer-links a { color:rgba(255,255,255,.7); text-decoration:none; font-size:.85rem; transition:color .2s; }
+  .footer-links a:hover { color:#a5d6a7; }
+  .footer-copy { color:rgba(255,255,255,.4); font-size:.75rem; letter-spacing:2px; }
+
+  ::-webkit-scrollbar{width:6px}
+  ::-webkit-scrollbar-track{background:#f5f5f5}
+  ::-webkit-scrollbar-thumb{background:#4caf50}
+  ::-webkit-scrollbar-thumb:hover{background:#2e7d32}
+
+  @media(max-width:768px){ section{padding:4rem 1.5rem;} }
+
+  .result-count { color:#666666; font-size:.8rem; margin-bottom:1rem; letter-spacing:1px; }
+
+  /* ticket online links */
+  .ticket-online { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:.8rem; margin-top:1.5rem; }
+  .ticket-online-btn { display:block; text-align:center; background:#e8f5e9; border:1px solid rgba(56,142,60,.3); color:#2e7d32; text-decoration:none; padding:.7rem 1rem; font-size:.85rem; font-weight:700; transition:all .2s; }
+  .ticket-online-btn:hover { background:var(--green-mid); color:#1a1a1a; }
+</style>
+</head>
+<body>
+
+<nav id="mainNav">
+  <a href="#" class="nav-logo">九州爬虫類フェス 2026</a>
+  <ul class="nav-links">
+    <li><a href="#info">概要</a></li>
+    <li><a href="#events">イベント</a></li>
+    <li><a href="#gourmet">グルメ</a></li>
+    <li><a href="#access">アクセス</a></li>
+    <li><a href="#exhibitors">出展者一覧</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home" style="max-width:100%;padding:0;">
+  <div class="leaf"><svg viewBox="0 0 100 100" fill="none"><path d="M10 90 Q 50 10 90 50 Q 50 80 10 90Z" fill="#a5d6a7"/></svg></div>
+  <div class="leaf"><svg viewBox="0 0 100 100" fill="none"><path d="M10 90 Q 50 10 90 50 Q 50 80 10 90Z" fill="#81c784"/></svg></div>
+  <div class="leaf"><svg viewBox="0 0 100 100" fill="none"><path d="M10 90 Q 50 10 90 50 Q 50 80 10 90Z" fill="#a5d6a7"/></svg></div>
+  <div class="leaf"><svg viewBox="0 0 100 100" fill="none"><path d="M10 90 Q 50 10 90 50 Q 50 80 10 90Z" fill="#81c784"/></svg></div>
+  <div class="leaf"><svg viewBox="0 0 100 100" fill="none"><path d="M10 90 Q 50 10 90 50 Q 50 80 10 90Z" fill="#c8e6c9"/></svg></div>
+  <div class="leaf"><svg viewBox="0 0 100 100" fill="none"><path d="M10 90 Q 50 10 90 50 Q 50 80 10 90Z" fill="#c8e6c9"/></svg></div>
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">EXO TERRA × 九州爬虫類フェス 2026</div>
+    <h1 class="hero-title">九州爬虫類フェス<span>2026</span></h1>
+    <p class="hero-subtitle">KYUSHU REPTILES FES — MARINMESSE FUKUOKA B-KAN</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <div class="hero-meta-label">開催日</div>
+        <div class="hero-meta-value">5月30日（土）・31日（日）</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-label">開場時間</div>
+        <div class="hero-meta-value">10:00〜17:00<br><small style="font-size:.75rem;color:var(--text-dim)">31日は16:00終了</small></div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-label">会場</div>
+        <div class="hero-meta-value">マリンメッセ福岡 B館</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-label">出展数</div>
+        <div class="hero-meta-value">約170店舗</div>
+      </div>
+    </div>
+    <div class="hero-cta-group">
+      <a href="#exhibitors" class="btn-primary">出展者一覧を見る</a>
+      <a href="https://q-reptile.com/fukuoka/" target="_blank" class="btn-secondary">公式サイトへ</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>SCROLL</span>
+    <svg width="16" height="24" viewBox="0 0 16 24" fill="none"><path d="M8 0V20M8 20L2 14M8 20L14 14" stroke="currentColor" stroke-width="1.5"/></svg>
+  </div>
+</section>
+
+<div class="alert-banner">
+  🚗 <span>駐車場は開場直後に満車になります。</span>　公共交通機関でのご来場を強くおすすめします　／　最終入場は各日閉場の <span>30分前</span> まで
+</div>
+
+<!-- INFO -->
+<section id="info">
+  <div class="section-label">ABOUT THE EVENT</div>
+  <h2 class="section-title">九州最大級の<em>爬虫類の祭典</em></h2>
+  <div class="divider"></div>
+  <div class="stats-row">
+    <div class="stat-item"><div class="stat-num">170<sup>+</sup></div><div class="stat-label">出展店舗数</div></div>
+    <div class="stat-item"><div class="stat-num">2</div><div class="stat-label">開催日数</div></div>
+    <div class="stat-item"><div class="stat-num">5<sup>回目</sup></div><div class="stat-label">マリンメッセでの開催</div></div>
+    <div class="stat-item"><div class="stat-num">8<sup>+</sup></div><div class="stat-label">特別イベント</div></div>
+  </div>
+  <div class="highlights-grid">
+    <div class="highlight-card"><div class="highlight-icon">🦎</div><div class="highlight-title">数千点のエキゾチックアニマル</div><div class="highlight-text">ヘビ・カメ・トカゲ・カメレオン・ヤモリ・カエルなど、<strong>図鑑でしか見たことのない</strong>世界中の生き物が一堂に。日本全国から一流専門店が集結します。</div></div>
+    <div class="highlight-card"><div class="highlight-icon">🏪</div><div class="highlight-title">専門家から直接話を聞ける</div><div class="highlight-text">各ショップのエキスパートに<strong>納得いくまで</strong>飼育相談ができる貴重な機会。飼育器具・飼料も豊富に取り揃えています。</div></div>
+    <div class="highlight-card"><div class="highlight-icon">🎪</div><div class="highlight-title">充実のイベントプログラム</div><div class="highlight-text">猛禽フライトショー・恐竜ステージ・ふれあい動物園・マジックショーなど<strong>8つの特別企画</strong>が2日間にわたって開催。</div></div>
+    <div class="highlight-card"><div class="highlight-icon">🍜</div><div class="highlight-title">会場グルメも充実</div><div class="highlight-text">博多の名店グルメも会場内で楽しめます。<strong>稚加栄</strong>などの人気店が出店し、爬虫類だけじゃない一日に。</div></div>
+    <div class="highlight-card"><div class="highlight-icon">👨‍👩‍👧‍👦</div><div class="highlight-title">家族みんなで楽しめる</div><div class="highlight-text">ふれあいコーナーや全長4mの恐竜ロボット、猛禽フライトショーなど、<strong>爬虫類初心者</strong>でも一日中楽しめます。</div></div>
+    <div class="highlight-card"><div class="highlight-icon">🎨</div><div class="highlight-title">アートも楽しめる</div><div class="highlight-text">サンドアート体験や藤仲リュウ氏によるデジタルライブペイントなど、<strong>アート系コンテンツ</strong>も充実。爬虫類グッズや可愛いイラスト雑貨のショップも多数。</div></div>
+  </div>
+
+  <div class="parking-section">
+    <div class="parking-grid">
+      <div class="parking-warning">
+        <h4>🚗 駐車場について（重要）</h4>
+        <ul>
+          <li style="list-style:none">❌ 会場周辺は<strong>開場直後に満車</strong>になります</li>
+          <li style="list-style:none">❌ 路上駐車・違法駐車は絶対お止めください</li>
+          <li style="list-style:none">❌ イベント日は近隣駐車場も埋まりやすい</li>
+        </ul>
+        <p style="margin-top:1rem;font-size:.8rem;color:var(--text-dim);">
+          事前予約は ▶ <a href="https://www.akippa.com" target="_blank" style="color:var(--gold);">akippa</a>・<a href="https://btimes.jp" target="_blank" style="color:var(--gold);">タイムズのB</a> がおすすめ
+        </p>
+      </div>
+      <div class="parking-tip">
+        <h4>🚇 公共交通機関でのアクセス（推奨）</h4>
+        <ul>
+          <li style="list-style:none">🚇 地下鉄「祇園駅」から徒歩約15分</li>
+          <li style="list-style:none">🚇 地下鉄「中洲川端駅」から徒歩約15分</li>
+          <li style="list-style:none">🚌 バス「マリンメッセ前」バス停すぐ</li>
+          <li style="list-style:none">🚕 博多駅からタクシー約10分</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS -->
+<section id="events" style="background:linear-gradient(180deg,#f9fbe7 0%,#f1f8e9 100%);max-width:100%;padding:6rem 2rem;">
+<div style="max-width:1200px;margin:0 auto;">
+  <div class="section-label">SPECIAL EVENTS</div>
+  <h2 class="section-title">2日間の<em>特別企画</em></h2>
+  <div class="divider"></div>
+  <div class="events-grid">
+    <div class="event-card">
+      <div class="event-number">01</div>
+      <div class="event-tag">2日間共通</div>
+      <h3>ビバリウムガイド<br><em>冨水明 トークショー</em></h3>
+      <div class="event-time">⏰ 12:00〜</div>
+      <div class="event-desc">「ビバリウムガイド」編集長の冨水明さんが登壇。ペット飼育・エキゾチックアニマルの飼い方について詳しく解説するトークショー。</div>
+    </div>
+    <div class="event-card">
+      <div class="event-number">02</div>
+      <div class="event-tag">2日間共通</div>
+      <h3>🦅 <em>猛禽フライトショー</em></h3>
+      <div class="event-time">⏰ 15:30〜</div>
+      <div class="event-desc">タカやフクロウなど猛禽類が来場者の頭上をダイナミックにフライト！迫力満点の飛行は一見の価値あり。</div>
+    </div>
+    <div class="event-card" style="border-color:rgba(232,196,66,.2);">
+      <div class="event-number">03</div>
+      <div class="event-tag">2日間共通</div>
+      <h3>🦕 ドキドキ恐竜広場<br><em>恐竜ステージイベント</em></h3>
+      <div class="event-time">⏰ 13:30〜</div>
+      <div class="event-desc">全長4mの恐竜ロボットが会場に！大迫力のパフォーマンスと恐竜クイズ。お子さんも大喜び間違いなし！</div>
+    </div>
+    <div class="event-card">
+      <div class="event-number">04</div>
+      <div class="event-tag">有料 500円（税込）</div>
+      <h3>🐰 ピクニカ共和国<br><em>ふれあい動物園</em></h3>
+      <div class="event-time">⏰ 入場料 500円</div>
+      <div class="event-desc">動物たちの癒しと元気いっぱいの空間。ほんわかとした雰囲気のふれあい動物園。小さなお子様から大人まで楽しめます。</div>
+    </div>
+    <div class="event-card">
+      <div class="event-number">05</div>
+      <div class="event-tag">2日間共通</div>
+      <h3>✨ マジッククロノス<br><em>マジックショー</em></h3>
+      <div class="event-time">⏰ 会場内随時</div>
+      <div class="event-desc">超人気マジックレストラン「マジッククロノス」のマジシャンが会場でパフォーマンスを披露。大人も子どもも楽しめる。</div>
+    </div>
+    <div class="event-card">
+      <div class="event-number">06</div>
+      <div class="event-tag">体験型</div>
+      <h3>🏖️ 東京ミモレ<br><em>サンドアート体験</em></h3>
+      <div class="event-time">⏰ 随時受付</div>
+      <div class="event-desc">色とりどりの砂をガラス瓶に詰めて、世界にひとつだけのオリジナルインテリアが作れます。プロスタッフがサポート。</div>
+    </div>
+    <div class="event-card">
+      <div class="event-number">07</div>
+      <div class="event-tag">2日間共通</div>
+      <h3>🎨 藤仲リュウ<br><em>デジタルライブペイント</em></h3>
+      <div class="event-time">⏰ 随時</div>
+      <div class="event-desc">コカ・コーラやSQUARE ENIXとのコラボでも知られるトップクリエイター「藤仲リュウ」氏によるリアルタイムライブペイント。</div>
+    </div>
+    <div class="event-card" style="border-color:rgba(232,196,66,.2);">
+      <div class="event-number">SP</div>
+      <div class="event-tag">5/30（土）初参戦</div>
+      <h3>🌟 スペシャルゲスト<br><em>福田 愛依 ／ ふじぴこ</em></h3>
+      <div class="event-time">⏰ 5月30日（土）</div>
+      <div class="event-desc">爬虫類大好き人気タレント「福田愛依」さんが5/30に初参戦！人気YouTuber「ふじぴこ」さんは2日間来場でトークショーを実施。</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- GOURMET -->
+<div class="gourmet-section" id="gourmet">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-label">FOOD &amp; DRINKS</div>
+    <h2 class="section-title">会場内<em>グルメ</em>も充実</h2>
+    <div class="divider"></div>
+    <p style="color:var(--text-dim);max-width:600px;line-height:1.8;margin-bottom:.5rem;">爬虫類フェスはグルメも楽しみのひとつ。博多の名店・こだわりの味が会場に集結。生体観覧の合間においしい食事やスイーツをどうぞ。</p>
+    <div class="gourmet-grid">
+      <div class="gourmet-item"><div class="icon">🐟</div><h4>稚加栄</h4><p>福岡の名店・稚加栄が出店。博多の海鮮グルメをフェス会場で。</p></div>
+      <div class="gourmet-item"><div class="icon">🍛</div><h4>みろくのカレー</h4><p>本格カレーをお楽しみください。</p></div>
+      <div class="gourmet-item"><div class="icon">🍞</div><h4>いとだパン</h4><p>地元で愛されるパン屋さんが特別出店。</p></div>
+      <div class="gourmet-item"><div class="icon">☕</div><h4>COVA's coffee</h4><p>こだわりのスペシャルティコーヒーで一息。</p></div>
+      <div class="gourmet-item"><div class="icon">💳</div><h4>PayPay対応</h4><p>現地決済はPayPayと現金払いに対応しています。</p></div>
+    </div>
+    <p style="color:var(--text-dim);font-size:.8rem;margin-top:1.5rem;">※出店内容は変更になる場合があります。詳細は公式サイトをご確認ください。</p>
+  </div>
+</div>
+
+<!-- ACCESS -->
+<section id="access">
+  <div class="section-label">TICKETS &amp; ACCESS</div>
+  <h2 class="section-title">チケット・<em>アクセス</em></h2>
+  <div class="divider"></div>
+
+  <div class="ticket-grid">
+    <div class="ticket-card primary">
+      <div class="ticket-type">一般（中学生以上）</div>
+      <div class="ticket-price">¥1,500<small>/当日</small></div>
+      <div class="ticket-note">前売券：¥1,300（税込）<br>未就学児・障がい者手帳所持者：<strong>無料</strong></div>
+    </div>
+    <div class="ticket-card">
+      <div class="ticket-type">小学生</div>
+      <div class="ticket-price">¥700<small>/当日</small></div>
+      <div class="ticket-note">前売券：¥500（税込）<br>最終入場は閉場30分前まで</div>
+    </div>
+    <div class="ticket-card" style="border-color:rgba(232,196,66,.2);">
+      <div class="ticket-type">🎟️ 特典付き前売り</div>
+      <div class="ticket-price" style="font-size:1.4rem;">セブンチケット</div>
+      <div class="ticket-note">コード：<strong>114-030</strong><br>オリジナルステッカー付き！<br>500セット限定販売</div>
+    </div>
+  </div>
+
+  <div class="ticket-online">
+    <a href="https://www.asoview.com/channel/tickets/VZasidy6Rs/" target="_blank" class="ticket-online-btn">🎫 アソビュー</a>
+    <a href="https://experiences.travel.rakuten.co.jp/experiences/62497" target="_blank" class="ticket-online-btn">🎫 楽天トラベル体験</a>
+    <a href="https://l-tike.com/order/?gLcode=83746" target="_blank" class="ticket-online-btn">🎫 ローチケ（Lコード83746）</a>
+    <a href="https://t.pia.jp/pia/event/event.do?eventBundleCd=b2401740" target="_blank" class="ticket-online-btn">🎫 チケットぴあ（Pコード995-900）</a>
+    <a href="https://eplus.jp/sf/detail/3919280001" target="_blank" class="ticket-online-btn">🎫 イープラス</a>
+  </div>
+
+  <div class="access-grid" style="margin-top:3rem;">
+    <div class="access-card">
+      <h3>📍 会場</h3>
+      <p><strong>マリンメッセ福岡 B館</strong><br>〒812-0031<br>福岡県福岡市博多区沖浜町2-1<br><br>▶ <a href="https://maps.google.com/?q=マリンメッセ福岡B館" target="_blank" style="color:var(--green-bright);">Googleマップで見る</a></p>
+    </div>
+    <div class="access-card">
+      <h3>🚇 公共交通機関</h3>
+      <p>・地下鉄空港線「祇園駅」より徒歩約15分<br>・地下鉄箱崎線「中洲川端駅」より徒歩約15分<br>・西鉄バス「マリンメッセ前」すぐ<br>・博多駅よりタクシー約10分<br><br><strong style="color:var(--rust);">🚗 お車でのご来場は駐車場が満車になるため公共交通機関を推奨します</strong></p>
+    </div>
+    <div class="access-card">
+      <h3>🎟️ 前売券販売店（店頭）</h3>
+      <p><strong>爬虫類ショップ Antenna</strong><br><br>【井尻店】福岡市博多区折立町10-25<br>TEL: 092-584-5353<br>営業: 14:00〜21:00（水曜定休）<br><br>【小倉店】北九州市小倉北区昭和町13-13<br>TEL: 070-1947-5099<br>営業: 15:00〜20:00（木曜定休）</p>
+    </div>
+    <div class="access-card">
+      <h3>ℹ️ お問い合わせ</h3>
+      <p><strong>主催：</strong>九州爬虫類フェス実行委員会<br>（合同会社浦田企画 / TVQ九州放送 / アンテナ）<br><br><strong>協賛：</strong>ジェックス株式会社（EXO-TERRA）<br><br>TEL: 092-262-0051（TVQ九州放送）<br><br><a href="https://q-reptile.com/fukuoka/" target="_blank" class="modal-link" style="margin-top:.5rem;display:inline-flex;">公式サイトへ →</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- EXHIBITORS -->
+<section id="exhibitors" style="background:#f9fbe7;max-width:100%;padding:6rem 2rem;">
+<div style="max-width:1300px;margin:0 auto;">
+  <div class="section-label">EXHIBITORS 2026 — 公式情報掲載</div>
+  <h2 class="section-title">出展者<em>一覧</em></h2>
+  <div class="divider"></div>
+  <p style="color:var(--text-dim);font-size:.85rem;margin-bottom:1.5rem;">
+    ⭐ = 注目ショップ　／　🏠 = 地元（九州）ショップ　／　名前をクリックで詳細・リンク表示<br>
+    ※説明文・リンクは公式サイト（q-reptile.com）の情報を元に掲載しています
+  </p>
+
+  <div class="exhibitor-controls">
+    <button class="filter-btn active" onclick="filterEx('all',this)">すべて</button>
+    <button class="filter-btn" onclick="filterEx('featured',this)">⭐ 注目</button>
+    <button class="filter-btn" onclick="filterEx('local',this)">🏠 地元九州</button>
+    <button class="filter-btn" onclick="filterEx('area-a',this)">エリアブース</button>
+    <button class="filter-btn" onclick="filterEx('area-b',this)">テーブルブース</button>
+    <button class="filter-btn" onclick="filterEx('goods',this)">グッズ・アート</button>
+    <input type="text" class="search-box" id="searchBox" placeholder="🔍 ショップ名で検索..." oninput="searchEx(this.value)">
+  </div>
+  <div class="result-count" id="resultCount"></div>
+  <div class="exhibitors-grid" id="exhibitorsGrid"></div>
+</div>
+</section>
+
+<footer>
+  <div class="footer-logo">九州爬虫類フェス 2026</div>
+  <p style="color:var(--text-dim);font-size:.85rem;margin-top:.3rem;">2026年5月30日（土）・31日（日） マリンメッセ福岡B館</p>
+  <div class="footer-links">
+    <a href="https://q-reptile.com/fukuoka/" target="_blank">🔗 公式サイト</a>
+    <a href="https://twitter.com/9rep_official" target="_blank">🐦 公式X（Twitter）</a>
+    <a href="#home">▲ トップへ戻る</a>
+    <a href="#exhibitors">出展者一覧</a>
+    <a href="#access">アクセス</a>
+  </div>
+  <p class="footer-copy">© 2026 九州爬虫類フェス実行委員会 ／ このページは非公式のファンサイトです</p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalBg(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-num" id="modalNum"></div>
+      <div class="modal-name" id="modalName"></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-tags" id="modalTags"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-links" id="modalLinks"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== FULL EXHIBITOR DATA (公式サイト情報) =====
+const exhibitors = [
+  // ---- エリアブース ----
+  {num:"1",area:"a",local:true,featured:true,name:"MOLTING BASE",tags:["爬虫類全般","福岡地元","ブリード","グッズ"],
+   desc:"福岡県で活動。自家繁殖の生体販売・オリジナルグッズ・オーダーケージの展示販売を行う。「人も動物も楽しい暮らし」をモットーに地域に根ざして活動。環境エンリッチメントの推進にも力を入れ、飼育者向け交流イベントも主催している。",
+   web:"https://lit.link/moltingbase"},
+  {num:"2",area:"a",local:false,featured:true,name:"CREYON POP",tags:["クレステッドゲッコー","グッズ","韓国輸入"],
+   desc:"クレステッドゲッコー専門ショップ。その他、爬虫類・小動物用の可愛い飼育グッズを主に韓国から輸入して販売している。",
+   instagram:"https://www.instagram.com/creyon_pop25"},
+  {num:"3",area:"a",local:false,featured:true,name:"マニアックレプタイルズ",tags:["爬虫類全般","横浜","大量生体"],
+   desc:"横浜から出店。沢山の生体を連れてくる人気ショップ。神奈川県横浜市南区に店舗を構え、生体数は神奈川No.1クラスを誇る。",
+   web:"https://maniacreptiles.com/",instagram:"https://www.instagram.com/maniacreptiles/",twitter:"https://x.com/maniacreptiles"},
+  {num:"4",area:"a",local:false,featured:true,name:"プロショップダイワ",tags:["爬虫類全般","大阪","希少種"],
+   desc:"大阪のプロショップダイワ。カラグールガメ・ロージーボア・トウブハコガメ・イエローヘッドモニターなどレアな生体を多数取り扱う老舗専門店。",
+   web:"https://daiwa-reptile.jp/"},
+  {num:"5",area:"a",local:false,featured:true,name:"EXO-TERRA／ジェックス",tags:["飼育用品","協賛スポンサー","新商品"],
+   desc:"今回の九州爬虫類フェスの冠協賛メーカー。世界中で愛されるEXO-TERRAブランドの爬虫類・両生類用飼育器具を展示・販売。新商品を中心に展示し、フード試供品配布など楽しいイベントも実施予定。",
+   web:"https://www.gex-fp.co.jp/exoterra/",instagram:"https://www.instagram.com/gex_exoterra/"},
+  {num:"6",area:"a",local:false,featured:true,name:"大津熱帯魚",tags:["レオパ専門","直輸入","CB"],
+   desc:"ヒョウモントカゲモドキ専門店。アメリカ＆カナダのTOPブリーダーより直輸入した個体を多数持参。ハイクオリティなレオパが勢揃い。",
+   web:"http://www.otsu-nettaigyo.com/"},
+  {num:"7",area:"a",local:false,featured:false,name:"アクアショップMQ",tags:["カメ","兵庫","爬虫類全般"],
+   desc:"兵庫県から出展。カメを中心に飼いやすい生体をたくさん持参。",
+   web:"https://aquashopmq.ocnk.net"},
+  {num:"8",area:"a",local:false,featured:false,name:"ペットショップ サウリア",tags:["爬虫類全般","大阪","管理重視"],
+   desc:"大阪府守口市の爬虫類ショップ。スタッフ一同が生体管理に気をつけ、お客様に納得してもらえるよう心がけている。",
+   web:"https://www.sauria.info/"},
+  {num:"9",area:"a",local:false,featured:false,name:"オーナーズフィッシュ＆レプタイルズ",tags:["爬虫類全般","大阪","YouTube"],
+   desc:"大阪府から出展。たくさんの生体を連れてくる。YouTubeチャンネルも運営している。",
+   web:"https://ownersfish.official.jp/"},
+  {num:"10",area:"a",local:false,featured:true,name:"リミックス・ペポニ",tags:["爬虫類全般","名古屋","大手","マニアック種"],
+   desc:"名古屋から出店する大手爬虫類専門店。マニアックな種類から初心者でも飼育しやすい種類まで幅広く持参。",
+   web:"https://remix-net.co.jp/"},
+  {num:"11",area:"a",local:false,featured:false,name:"リミックス・ぺけっと",tags:["哺乳類","珍獣","猛禽類","愛知"],
+   desc:"愛知県から出店。哺乳類・珍獣・エキゾチックアニマル・小鳥・鳥類・猛禽類など取り扱う。珍しい種類や可愛い個体を沢山持参。",
+   web:"https://remix-net.co.jp/"},
+  {num:"12",area:"a",local:false,featured:false,name:"エンドレスゾーン",tags:["爬虫類全般","多ジャンル","リクエスト対応"],
+   desc:"多ジャンル幅広く出品。サイトの在庫生体から出品してほしい生体のリクエストも承る。",
+   web:"http://endlesszone.kir.jp/"},
+  {num:"13",area:"a",local:true,featured:true,name:"れぷたいるずかふぇちょろちょろ",tags:["レオパ","ニシアフ","フトアゴ","北九州","カフェ"],
+   desc:"北九州で爬虫類カフェ・ショップを運営。可愛いレオパ・ニシアフ・フトアゴを多数持参。",
+   web:"https://reptilescafe-chorochoro.com/"},
+  {num:"14",area:"a",local:false,featured:false,name:"ハーミット",tags:["爬虫類全般","兵庫","尼崎"],
+   desc:"兵庫県尼崎市の爬虫類専門店。たくさんの生体を持参。",
+   web:"https://www.hermit-reptile.com/"},
+  {num:"15",area:"a",local:false,featured:true,name:"BLACKY DESIGNING",tags:["グッズ","オリジナル"],
+   desc:"オリジナル爬虫類グッズのBLACKY DESIGNING。喜んでもらえるグッズをたっぷり持参。",
+   web:"https://blackydesign.official.ec/"},
+  {num:"16",area:"a",local:false,featured:true,name:"PiccoloZoo",tags:["クレステッドゲッコー","レオパ","東京浅草","ふれあい"],
+   desc:"東京浅草で爬虫類＆小動物の販売とふれあいを営業。クレステッドゲッコーとレオパードゲッコーの販売に特化。専属ブリーダーからクオリティの高いクレスを数多く揃え、圧倒的な数量を準備。",
+   web:"https://piccolozoo.biz/"},
+  {num:"17",area:"a",local:false,featured:true,name:"雅Reptiles",tags:["ボールパイソン","多モルフ","初心者〜上級者"],
+   desc:"様々なモルフ（模様や色合い）のボールパイソンを取り揃える。初心者から上級者まで満足できるラインアップ。",
+   web:"https://miyavi-reptiles.jp/"},
+  {num:"18",area:"a",local:false,featured:true,name:"London Leopa",tags:["ヒョウモントカゲモドキ","ハイエンドモルフ","自家繁殖"],
+   desc:"自家繁殖したハイエンドで幅広いモルフのヒョウモントカゲモドキをメインに、ハイナン・バワンリン・イシヤモリなども展示販売。",
+   twitter:"https://x.com/londonleopa"},
+  {num:"19",area:"a",local:false,featured:false,name:"たらみのしっぽ",tags:["小動物","もふもふ","兵庫"],
+   desc:"兵庫県から出店。可愛いもふもふ達をたくさん連れてくる。前回も好評だったリピーター出展者。",
+   web:"http://tarami-pet.studio.site"},
+  {num:"20",area:"a",local:true,featured:true,name:"SAKUDA",tags:["爬虫類全般","福岡宮若市","マニアック種"],
+   desc:"福岡県宮若市からの地元出店。メジャーな種からマニアックな一点モノまで幅広く持参。",
+   instagram:"https://www.instagram.com/sakuda929"},
+  {num:"21",area:"a",local:false,featured:false,name:"Satisfactory",tags:["爬虫類全般","大阪","厳選個体"],
+   desc:"大阪からその時1番の厳選個体を引っさげて参戦。爬虫類トークが得意なスタッフが対応。",
+   web:"https://satisfactory-osaka.com/"},
+  {num:"22",area:"a",local:false,featured:false,name:"LOJ",tags:["爬虫類全般","奈良","一般種〜レア種"],
+   desc:"関西奈良県から出店。一般種からレア種まで幅広く持参。",
+   web:"https://www.loj25.com/"},
+  {num:"23",area:"a",local:false,featured:true,name:"from SCRATCH",tags:["リクガメ専門","YouTube","福岡出身"],
+   desc:"ほぼリクガメ専門。健康で元気なリクガメを持参。YouTubeでリクガメ動画も配信中。オーナーの故郷・福岡への初参加。",
+   web:"http://from-scratch.ocnk.net/"},
+  {num:"24",area:"a",local:true,featured:false,name:"GROWING",tags:["爬虫類全般","福津市"],
+   desc:"福岡県福津市より出展。ブースにお立ち寄りを。"},
+  {num:"25",area:"a",local:false,featured:false,name:"OG Hiroshima",tags:["爬虫類全般","広島"],
+   desc:"広島からの出店。大好きな九州での縁を楽しみにしている。",
+   web:"https://www.oghiroshima.com/"},
+  {num:"26",area:"a",local:true,featured:true,name:"レプタイルズショップHEBIMETAL",tags:["爬虫類全般","大野城市","福岡地元"],
+   desc:"福岡県大野城市からの地元出店。沢山の生体を持参。ヘビをメタルなかっこよさで魅せる独自路線のショップ。"},
+  {num:"27",area:"a",local:false,featured:false,name:"Coco Colors",tags:["爬虫類全般","哺乳類","両生類","奈良"],
+   desc:"奈良県から出店。爬虫類・哺乳類・両生類・エキゾチックアニマル・珍しい生体・活エサ・用品・アニマルグッズなど盛りだくさん。",
+   web:"http://cococolors1.official.ec/"},
+  {num:"28",area:"a",local:false,featured:false,name:"terra",tags:["爬虫類全般","神戸"],
+   desc:"神戸市からの出店。",
+   web:"https://terra-kobe.jp"},
+  {num:"29",area:"a",local:false,featured:false,name:"Sukerep神戸店",tags:["レオパ","フトアゴ","神戸"],
+   desc:"神戸からの出店。レオパ・フトアゴなどを持参。",
+   web:"https://www.sukerep-kobe.com/"},
+  {num:"30",area:"a",local:false,featured:false,name:"ZERO Selection",tags:["自家産CB","国内CB","愛知"],
+   desc:"愛知県から出展。自家産および国内CBのみの取り扱い。状態のいい個体を揃える。"},
+  {num:"31",area:"a",local:true,featured:true,name:"アンテナ",tags:["爬虫類全般","福岡地元","九レプ公式"],
+   desc:"地元福岡の爬虫類ショップ。福岡市南区井尻と北九州市小倉北区に店舗あり。九州爬虫類フェスの公式アンテナショップで、前売り券の販売も担当。状態の良い生体とご満足いただけるケアに努めている。",
+   web:"https://q-reptile.com/antenna.html",instagram:"https://www.instagram.com/antenna0830/"},
+  {num:"32",area:"a",local:false,featured:false,name:"ファインレプタイルズ",tags:["爬虫類全般","広島","リクエスト対応"],
+   desc:"広島の爬虫類専門店。リクエストがあればお気軽にお問い合わせを。",
+   web:"https://www.finereptiles.com/"},
+  {num:"33",area:"a",local:false,featured:true,name:"Bug Bug bugs",tags:["奇蟲","爬虫類全般","東京"],
+   desc:"東京から出店。奇蟲から爬虫類まで様々な生き物を持参。",
+   twitter:"https://x.com/bugbug_bugs"},
+  {num:"34",area:"a",local:false,featured:false,name:"廣島毒蜥蜴",tags:["カメ","モモンガ","広島"],
+   desc:"広島県から出店。カメ・モモンガメインで持参。用品・おやつなども多数。",
+   instagram:"https://www.instagram.com/hiroshima_dokutokage/"},
+  {num:"35",area:"a",local:false,featured:false,name:"はちゅんが",tags:["小動物","爬虫類","長崎","2回目"],
+   desc:"長崎から2回目の出展。CBの可愛い小動物とかっこいい爬虫類を持参。",
+   instagram:"https://www.instagram.com/hacyunga_ngs.ih"},
+  {num:"36",area:"a",local:false,featured:false,name:"ＥＳＰ",tags:["爬虫類全般","大阪","毎回参加"],
+   desc:"大阪の人気ショップ。毎回参加の常連出展者。沢山の生体を持参。",
+   web:"https://www.espweb.jp/"},
+  {num:"37",area:"a",local:false,featured:true,name:"CANDLE",tags:["カメレオン専門","兵庫","こだわり生体"],
+   desc:"兵庫県から毎回参加のCANDLE。カメレオンを中心に、こだわりの生体をどっさり持参。リクエストも歓迎。",
+   web:"http://r-candle.jp/"},
+  {num:"38",area:"a",local:false,featured:true,name:"株式会社 三晃商会",tags:["飼育用品","メーカー","REPTIZOO"],
+   desc:"国内大手ペット用品メーカー。小動物・爬虫類・小鳥・昆虫用品を中心に展開。2023年からは爬虫類専門ブランド「REPTIZOO」との提携も開始。SANKOこだわりの製品を展示。",
+   web:"https://www.sanko-wild.com/"},
+  {num:"39",area:"a",local:false,featured:true,name:"Blue moon",tags:["リクガメ","イグアナ","ウチワサボテン","静岡"],
+   desc:"静岡県から出展。リクガメをはじめ草食系トカゲ類（イグアナ・フトアゴ・アガマ等）が喜ぶ栄養満点なトゲ無し「ウチワサボテン」も販売。",
+   web:"https://bluemoon.work/"},
+  {num:"40",area:"a",local:false,featured:false,name:"Miia Reptiles",tags:["爬虫類全般","大阪"],
+   desc:"大阪からの出店。色々な子を持参。",
+   twitter:"https://x.com/miia_reptiles24"},
+  {num:"41",area:"a",local:false,featured:true,name:"Fantastic ゴリオ",tags:["カメレオン","樹上性爬虫類","愛知"],
+   desc:"愛知県から出店。カメレオンをはじめ樹上性両生爬虫類を各種販売。",
+   web:"https://gorio.daa.jp/index.html"},
+  {num:"42",area:"a",local:false,featured:true,name:"Crestomocko",tags:["クレス","ひょうたんランプ","インテリア"],
+   desc:"可愛いクレステッドゲッコーと素敵なひょうたんランプを持参。ユニークなコラボが魅力。",
+   twitter:"https://x.com/smiledego"},
+  {num:"43",area:"a",local:false,featured:false,name:"良心堂",tags:["爬虫類全般","愛知"],
+   desc:"愛知県から出展。元気な個体を持参。",
+   web:"http://www.ryoushindou.com"},
+  {num:"44",area:"a",local:false,featured:true,name:"ペッコヤプラス",tags:["ラコダク","自家繁殖","愛知"],
+   desc:"愛知県から出展。自家繁殖のラコダク（ラコダクティルス）の他、飼育して楽しい生体を持参。",
+   web:"https://pekkoya.net/"},
+  {num:"45",area:"a",local:false,featured:false,name:"Teraまゆり",tags:["爬虫類全般","多種生体"],
+   desc:"今年も沢山の生体を持参。ぜひブースへ。",
+   web:"http://teramayuri.net"},
+  {num:"46",area:"a",local:false,featured:true,name:"GUNGNIR",tags:["フトアゴ専門","国内CB","大阪","オーストラリア爬虫類"],
+   desc:"大阪市西淀川区の爬虫類・両生類販売店。フトアゴヒゲトカゲ専門店として知られ、オーストラリア爬虫類・リクガメ・レオパなども取り扱う。主に国内CBを中心に展開。",
+   web:"https://www.gungnir-animals.com/"},
+  {num:"47",area:"a",local:false,featured:true,name:"F and K",tags:["木製ケージ","オーダー","兵庫"],
+   desc:"兵庫県西宮市に工房を構える木製ケージ専門メーカー。爬虫類・小動物用の木製ケージを製作。オーダーはもちろん、当日お持ち帰りいただけるケージを多数用意。ケージに悩んでいる方の相談も歓迎。",
+   web:"https://www.fandk.site/"},
+  {num:"48",area:"a",local:false,featured:true,name:"ポポ",tags:["フトアゴ専門","国産"],
+   desc:"国産フトアゴヒゲトカゲ専門店。",
+   instagram:"https://www.instagram.com/popo.honbu"},
+  {num:"49",area:"a",local:false,featured:false,name:"ファニーテール",tags:["爬虫類全般","良質生体","お迎えサポート"],
+   desc:"優良生体の厳選・お求めやすい価格設定を実現。全力でお迎えのサポートを提供。",
+   web:"https://funny-tail.online"},
+  {num:"50",area:"a",local:false,featured:false,name:"m-plants",tags:["植物","珍しい植物","テラリウム"],
+   desc:"日頃余り見ない珍しい植物を持参。価格も控えめ。テラリウム向け植物を探している方必見。"},
+  {num:"51",area:"a",local:false,featured:false,name:"GTReptiles",tags:["ボールパイソン","カーペットパイソン","国内CB","滋賀"],
+   desc:"滋賀県から出展。国内CBや直輸入個体のボールパイソン・カーペットパイソンをメインに販売。"},
+  {num:"52",area:"a",local:false,featured:true,name:"MONSTERS×MONSTER",tags:["爬虫類全般","ジャイゲコ","モニター","茨城"],
+   desc:"茨城県土浦市の爬虫類ショップ。オールジャンルの生体を取り扱う。ジャイゲコ・フトアゴ・レオパ・ボールパイソン・モニター・カメなど様々な爬虫類を持参。",
+   twitter:"https://x.com/monsters0808"},
+  {num:"53",area:"a",local:false,featured:false,name:"レプタイルショップ アンティル",tags:["爬虫類全般","リクエスト対応"],
+   desc:"2回目の参加。リクエストをどしどしDMにて受付中。",
+   twitter:"https://x.com/AntilleReptiles"},
+  {num:"54",area:"a",local:false,featured:true,name:"原田窯",tags:["手作りシェルター","陶芸","オブジェ"],
+   desc:"全て手作り・手作業で一つ一つ制作したオリジナルシェルター・植木鉢・オブジェ。一点物の陶芸作品はファン必見。",
+   instagram:"https://www.instagram.com/shouheicocoa"},
+  {num:"55",area:"a",local:true,featured:true,name:"CROBER FARM",tags:["飼料","生体","福岡田川"],
+   desc:"福岡田川からの地元出展。エサを中心に少しの生体も持参。",
+   instagram:"https://www.instagram.com/croberfarm"},
+  {num:"56",area:"a",local:false,featured:true,name:"フクロウと小動物のお店 鷹翔",tags:["チンチラ","猛禽","牧草"],
+   desc:"チンチラを沢山持参。牧草も安価で販売。猛禽も予定。"},
+  {num:"57",area:"a",local:false,featured:false,name:"爬っちゃん",tags:["爬虫類全般","大阪","約10年ぶり"],
+   desc:"大阪から約10年ぶりに出店。なるべく変わった生体を持参。"},
+  {num:"58",area:"a",local:false,featured:true,name:"ORYZA",tags:["カメレオン","セレクト生体"],
+   desc:"カメレオンを中心にセレクトした爬虫類を多数持参。",
+   web:"https://oryza.jp.net"},
+  {num:"59",area:"a",local:false,featured:true,name:"Pumilio（プミリオ）",tags:["ヤドクガエル","東京世田谷","レア両生類"],
+   desc:"東京都世田谷区の希少ショップ。毎回連続出展で、当店らしい生き物（主にヤドクガエルなどの希少両生類）を厳選して持ち込む。",
+   web:"http://www.maroon.dti.ne.jp/pumilio/"},
+  {num:"60",area:"a",local:true,featured:true,name:"OCTAVE",tags:["レオパ","小型ヤモリ","ダンゴムシ","福岡"],
+   desc:"福岡県でレオパや小さいヤモリを中心にブリード。九レプ恒例のダンゴムシも大量持参。",
+   web:"https://ameblo.jp/pck-octave/"},
+  {num:"61",area:"a",local:true,featured:true,name:"LR",tags:["ボールパイソン専門","福岡市","高品質"],
+   desc:"福岡市内でボールパイソン専門店を営む。専門店ならではの美しいボールパイソンを多数持参。",
+   web:"https://lr-fukuoka.com/"},
+  {num:"62",area:"a",local:false,featured:true,name:"SWAG Baller",tags:["ボールパイソン","輸入","100匹","ハイクオリティ"],
+   desc:"ボールパイソン専門店。アメリカやヨーロッパ諸国から厳選輸入したハイクオリティなボールパイソンを100匹持参。ショップのブリード個体も多数。",
+   web:"https://www.swag-baller.com/"},
+  {num:"63",area:"a",local:false,featured:false,name:"06shockwave",tags:["爬虫類全般","大阪"],
+   desc:"大阪から参加。",
+   twitter:"https://x.com/06shockwave"},
+  {num:"64",area:"a",local:false,featured:true,name:"Side-B Collection",tags:["ボールパイソン専門","千葉"],
+   desc:"千葉県から参加のボールパイソン専門店。ボールパイソンの美しさ・格好良さを伝えることをモットーにしている。",
+   web:"https://side-b-collection.com/"},
+  {num:"65",area:"a",local:false,featured:true,name:"ハッピーフレンズ",tags:["ヤモリ専門","韓国CB","ブラックナイト","大阪"],
+   desc:"大阪市でヤモリを専門に扱う。韓国CBでクオリティの高い生体をラインナップ。ハイクオリティのブラックナイトやニシアフ、貴重なトッケイヤモリも取り扱う。",
+   web:"https://sites.google.com/makehappyfriends.com/makehappyfriends-com"},
+  {num:"66",area:"a",local:true,featured:false,name:"Small Forest",tags:["爬虫類全般","佐賀","受け渡し対応"],
+   desc:"佐賀市から出店。ご希望の生体はイベント会場での受け渡しも対応。",
+   instagram:"https://www.instagram.com/small_forest0706/"},
+  {num:"67",area:"a",local:false,featured:false,name:"DOPE Reptiles",tags:["爬虫類全般","香川高松","メジャー〜マイナー種"],
+   desc:"香川県高松市から出店。メジャー種〜マイナー種まで取り扱い。",
+   instagram:"https://instagram.com/reptiles_Daruma200518"},
+  {num:"68",area:"a",local:false,featured:false,name:"アクアキューブリオ",tags:["カメ","珍獣"],
+   desc:"カメをメインに珍獣等も持参。",
+   web:"http://aqua-rio.jp"},
+  {num:"69",area:"a",local:false,featured:false,name:"BUG.st",tags:["奇蟲","大阪","過去最大ラインナップ"],
+   desc:"大阪より過去最大のラインナップで来場。奇蟲好き必見。"},
+  {num:"70",area:"a",local:true,featured:false,name:"inhabit",tags:["爬虫類全般","小動物","福岡西区"],
+   desc:"福岡県西区からの地元出店。爬虫類に小動物、元気で可愛い生体たちを沢山持参。"},
+  {num:"71",area:"a",local:false,featured:true,name:"おだんごくらぶ",tags:["ダンゴムシ","奇蟲","カニ","富山"],
+   desc:"富山県から出店。沢山のダンゴムシや奇蟲・カニなどを持参。",
+   web:"https://odangoclub.base.shop/"},
+  {num:"72",area:"a",local:true,featured:false,name:"Reptiles shop TEN",tags:["爬虫類全般","福岡"],
+   desc:"福岡県からの地元出店。色々な種類の生体を持参。"},
+  {num:"73",area:"a",local:false,featured:false,name:"animal area HARU",tags:["クレス","レオパ","ガーゴイル","神戸","福岡出身オーナー"],
+   desc:"兵庫県神戸市から参加。クレステッドゲッコー・ヒョウモントカゲモドキ・ガーゴイルゲッコーなど可愛いヤモリ達を持参。初心者向けからハイクオリティまで揃える。オーナーは福岡市産まれ。",
+   instagram:"https://www.instagram.com/a.a.haru_"},
+  {num:"74",area:"a",local:false,featured:false,name:"Hide&Seek",tags:["小動物","多種","兵庫"],
+   desc:"兵庫県から出店のHide&Seek。沢山の種類の小動物を持参。",
+   instagram:"https://www.instagram.com/nishidaman5363"},
+  {num:"75",area:"a",local:false,featured:false,name:"BebeRep.",tags:["爬虫類全般","大阪"],
+   desc:"大阪からの出店。ご来場の際はぜひお立ち寄りを。",
+   twitter:"https://x.com/BebeRep"},
+  {num:"76",area:"a",local:false,featured:false,name:"exotic-supply",tags:["飼育用品","リクエスト対応"],
+   desc:"持ち込める数に限りがあるため、遠慮なくリクエストを！",
+   web:"https://www.exotic-supply.com/phone/"},
+  {num:"77",area:"a",local:false,featured:false,name:"Cherie U＋ シェリーユー",tags:["グッズ","爬虫類系"],
+   desc:"毎度お馴染みのシェリーユー。博多のもつ鍋と皆様に会えることを楽しみにしている。",
+   web:"https://cherie.crayonsite.com/"},
+  {num:"78",area:"a",local:false,featured:false,name:"もふまるふれんず",tags:["モルモット","ハムスター","齧歯類","大阪"],
+   desc:"大阪府からたくさんの小動物を持参。モルモット・シリアンハムスター・キャンベルハムスターなど齧歯類メイン。",
+   twitter:"https://x.com/mofumalfriends"},
+  {num:"79",area:"a",local:false,featured:false,name:"mogz",tags:["爬虫類全般","大阪","かっこいい系"],
+   desc:"大阪市から出店。かっこいい子・可愛い子を多数持参。",
+   instagram:"https://www.instagram.com/mogz2.22"},
+  {num:"80",area:"a",local:true,featured:true,name:"モモンガショップsuga sugar glider",tags:["フクロモモンガ","小動物グッズ","福岡市大橋"],
+   desc:"福岡市大橋のモモンガショップ。モモンガさん向けのベッド・おやつ・グッズ・お出かけポーチなど「kawaii」グッズを多数持参。ベタ慣れモモンガもいるかも。",
+   web:"https://sugasugarglider.jp",instagram:"https://www.instagram.com/sugasugarglider"},
+  {num:"81",area:"a",local:false,featured:true,name:"ぶりくら/ぶりぃ堂",tags:["国内CB","オリジナルグッズ","兵庫"],
+   desc:"兵庫県から出展。ぶりくららしい国内CBを中心に持参。オリジナルグッズも豊富。",
+   web:"https://burikura.com"},
+  {num:"82",area:"a",local:false,featured:true,name:"G.O.LAB.",tags:["クレス","レオパ","ヤモリ","大阪淀川区"],
+   desc:"大阪市淀川区の爬虫類SHOP。主にクレスやレオパなど人気のペットヤモリを取り扱い、日々楽しく営業している。",
+   web:"https://gecko-osaka.com"},
+  {num:"83",area:"a",local:false,featured:false,name:"いきもの屋さん AGO",tags:["爬虫類全般","兵庫"],
+   desc:"兵庫県からの出店。おーなーとてんちょーの好きなものたっぷり持参。",
+   twitter:"https://x.com/ago_ikimono"},
+  {num:"84",area:"a",local:false,featured:true,name:"ZICRA CORPORATION",tags:["飼育用品","メーカー","シェルター","ジクラ"],
+   desc:"爬虫類・小動物・オカヤドカリの飼育用品を製造するメーカーのジクラ。新商品の爬虫類用シェルターをはじめ、楽しくオシャレに飼育できる提案を実施。",
+   web:"https://www.zicra.com/"},
+  {num:"85",area:"a",local:false,featured:true,name:"レオレオカメレオンファーム・本部",tags:["カメレオン専門","ヘビ","両生類","サプリメント"],
+   desc:"カメレオンや爬虫類の専門ショップ。カメレオン以外にもヘビや両生類もブリード。大好評のエキゾジアとサプリメントなどオリジナル商品も展示販売。",
+   web:"https://www.leoleocf.com/"},
+  {num:"86",area:"a",local:false,featured:true,name:"REPTILESTOKYO",tags:["爬虫類全般","東京","有名店","Clutch-Mate CB"],
+   desc:"爬虫類の世界をより多くの人達に知ってもらうべく、爬虫類販売を中心に様々な活動を展開する東京の有名ショップ。ファームのClutch-Mate CBも含め沢山の生体を持参。",
+   web:"https://reptiles-tokyo.com",instagram:"https://www.instagram.com/reptilestokyo2024/"},
+  {num:"87",area:"a",local:true,featured:false,name:"CRESTA",tags:["爬虫類全般","宗像市","福岡地元"],
+   desc:"地元福岡県宗像市から参加。",
+   instagram:"https://www.instagram.com/reptileavenue_cresta"},
+  {num:"88",area:"a",local:false,featured:true,name:"KazzRepJapan",tags:["クレステッドゲッコー","ブリーダー","YouTube"],
+   desc:"クレステッドゲッコーをメインにブリード。初めてのペット爬虫類用からトップブリーダー用まで揃える。YouTubeで販売生体の紹介動画も配信予定。クレスに興味のある方は要チェック。",
+   web:"https://www.youtube.com/@KazzRepJapan"},
+  {num:"89",area:"a",local:false,featured:true,name:"（株）美ら亀",tags:["カメ専門","沖縄","直輸入","ハイクオリティ"],
+   desc:"沖縄県から出店。中国などから直輸入したレアなカメやハイクオリティなカメをできるだけお安くマニアに届けることを目標にしている。",
+   twitter:"https://x.com/hachumusi_ch"},
+  {num:"90",area:"a",local:false,featured:false,name:"トゲコーラ",tags:["爬虫類全般","多種生体"],
+   desc:"今年もよろしく。HP・SNS掲載の生体及び他たくさんの生体を持参。",
+   web:"https://togecola.com"},
+  {num:"91",area:"a",local:false,featured:true,name:"渋谷松濤爬虫類",tags:["ボールパイソン","トカゲモドキ","アートギャラリー","東京渋谷"],
+   desc:"東京都渋谷区松濤にあるボールパイソン・トカゲモドキを中心とした爬虫類アートギャラリー。高クオリティな子たちをブースで展示。",
+   instagram:"https://www.instagram.com/shoto_reptiles"},
+  {num:"92",area:"a",local:false,featured:true,name:"ファットテール",tags:["ニシアフ専門","元祖","東京・大阪","高クオリティ"],
+   desc:"日本初の【元祖】ニシアフリカトカゲモドキ専門店。専門店ならではの高クオリティな子からお求めやすい子まで揃える。東京と大阪に店舗あり。",
+   web:"https://fattail-aoto.com/"},
+  {num:"93",area:"a",local:false,featured:true,name:"Noan＋",tags:["刺繍グッズ","レオパ","ニシアフ","東京","3回目"],
+   desc:"東京より3度目の出店。刺繡のハンカチ・キーホルダー・くつ下・保冷バック等のシーズナル商品、タフティングラグ・もこもこキーホルダー等を用意。爬虫類以外にチンチラ・モルモット・リクガメなど種類も増量。",
+   web:"https://www.noant-shop.com/"},
+  {num:"94",area:"a",local:false,featured:false,name:"縁々",tags:["小動物","もふもふ","愛媛"],
+   desc:"愛媛県から可愛いもふもふ達を持参。",
+   instagram:"https://www.instagram.com/enen_ehime/"},
+  {num:"95",area:"a",local:false,featured:true,name:"株式会社猛禽屋",tags:["猛禽類","多種動物","茨城"],
+   desc:"茨城県から出店。たくさんの動物を持参。猛禽類を扱う数少ない専門業者。"},
+
+  // ---- テーブルブース ----
+  {num:"T-1",area:"b",local:false,featured:true,name:"爬虫類ショップ ワイルドモンスター",tags:["飼育用品","新商品"],
+   desc:"新商品等々出来るだけ多くの商品を持参。",
+   web:"https://www.w-monster.com/"},
+  {num:"T-2",area:"b",local:false,featured:true,name:"有限会社トップクリエイト",tags:["飼育用品","アクリルケージ","愛知"],
+   desc:"愛知県から毎回参加。新商品・売れ筋商品・新作アクリルケージなど様々なアイテムを用意。飼育用品に関するお困りごとやご相談もお任せ。",
+   web:"https://www.topcreate.jp/"},
+  {num:"T-3",area:"b",local:false,featured:true,name:"豹紋堂／四国ブリーダーズストリート",tags:["レオパ","自家繁殖","香川"],
+   desc:"香川県より参加の豹紋堂。いいサイズの自家繁殖レオパを中心に持参。",
+   web:"https://4breedersstreet.jp/hyomondo/index.html"},
+  {num:"T-4",area:"b",local:false,featured:false,name:"aiSUru Outlet by Rey's Factory",tags:["レオパ","ボールパイソン","アイシェルター","沖縄"],
+   desc:"沖縄県から2回目の出展。レオパ・ボールパイソン・ハムスターなどの自家繁殖個体を出品。アイシェルターも販売。",
+   instagram:"https://www.instagram.com/reysfactory/"},
+  {num:"T-5",area:"b",local:false,featured:false,name:"˙˚ʚAngelɞ˚˙",tags:["グッズ","アクセサリー","爬虫類モチーフ","愛知"],
+   desc:"愛知県から参加。可愛く普段使いしやすい爬虫類アクセサリーやグッズを販売。",
+   twitter:"https://x.com/angel_145_2537"},
+  {num:"T-6",area:"b",local:false,featured:false,name:"雅（テーブル）",tags:["爬虫類全般","多種生体"],
+   desc:"沢山可愛い子達を持参。「君に決めた！」と名ゼリフを言ってくれれば喜ぶ出展者。",
+   twitter:"https://x.com/bonmiyabi"},
+  {num:"T-7",area:"b",local:true,featured:true,name:"PythonOita",tags:["ボールパイソン","ブリーダー","大分"],
+   desc:"大分県でボールパイソンの繁殖と販売をしている地元九州のブリーダー。",
+   twitter:"https://x.com/OG91949727"},
+  {num:"T-8",area:"b",local:false,featured:false,name:"A・I ペット",tags:["ボールパイソン","ブリーダー"],
+   desc:"ボールパイソンのブリーダー。"},
+  {num:"T-9",area:"b",local:false,featured:true,name:"八ケロ・カエルブリード研究所",tags:["カエル","両生類","東京八王子","格安"],
+   desc:"東京都八王子市からの常連出展。良質な両生類を中心にその他生体を格安で提供。",
+   twitter:"https://x.com/kaeruichido"},
+  {num:"T-10",area:"b",local:false,featured:false,name:"CLEAR BLUE",tags:["グッズ","爬虫類小動物"],
+   desc:"味のある爬虫類・両生類・小動物グッズを販売。",
+   instagram:"https://www.instagram.com/clear_blue_0913/"},
+  {num:"T-11",area:"b",local:true,featured:true,name:"8drawers",tags:["水彩色鉛筆","アートグッズ","鹿児島出身","福岡在住"],
+   desc:"鹿児島県出身・福岡在住の水彩色鉛筆動物画家兼アニマルイラストレーター。国内外で展示会を行う実力派。色鮮やかな動物たちのアートグッズが多数。",
+   instagram:"https://www.instagram.com/8drawers_official/"},
+  {num:"T-12",area:"b",local:false,featured:false,name:"ヤマモトナオキ/HERP MODA",tags:["爬虫類イラスト","神話モチーフ","アート"],
+   desc:"爬虫類をリアル寄りに描いた作品が多い。神話などを取り込んだデザインを得意とする。",
+   web:"http://yamamoto-naoki.com"},
+  {num:"T-13",area:"b",local:true,featured:false,name:"BIO絵COLOGY",tags:["色鉛筆画","アートグッズ","福岡山口"],
+   desc:"福岡・山口を中心に活動する色鉛筆画家。爬虫類・両生類の作品の原画・ポスター・キーホルダー・Tシャツ等を販売。",
+   instagram:"https://instagram.com/iroenpitsu_art"},
+  {num:"T-14",area:"b",local:true,featured:true,name:"REPT HAMMER",tags:["アクセサリー","彫金","爬虫類モチーフ","福岡地元"],
+   desc:"地元福岡の爬虫類好き彫金師3人による爬虫類モチーフのアクセサリーを販売。多種多様な爬虫類のモチーフを展開。",
+   instagram:"https://www.instagram.com/rept.hammer"},
+  {num:"T-15",area:"b",local:true,featured:true,name:"EuLUCA（ユルーカ）",tags:["クレステッドゲッコー","ヒメハリテンレック","福岡地元"],
+   desc:"地元福岡県からの出店。自慢のクレステッドゲッコーとヒメハリテンレックをメインに持参。",
+   twitter:"https://x.com/euluca_29"},
+  {num:"T-16",area:"b",local:true,featured:false,name:"B-Lucky15",tags:["ニシアフ","福岡地元","3回目"],
+   desc:"地元福岡から3回目の参加。愛情込めたニシアフリカトカゲモドキを持参。",
+   instagram:"https://www.instagram.com/b_lucky_15"},
+  {num:"T-17",area:"b",local:false,featured:true,name:"BB Geckos",tags:["クレス","ガーゴイル","自家繁殖","大阪"],
+   desc:"大阪でクレスのブリードをしているBB Gecko's。販売個体は自家繁殖のみ。クレス・ガーゴをお探しの方は必見。",
+   instagram:"https://instagram.com/white_896_wolf"},
+  {num:"T-18",area:"b",local:false,featured:true,name:"爬虫類ぽわ",tags:["クレス","ガーゴ","チャホ","グッズ"],
+   desc:"自家繁殖のクレス・ガーゴ・チャホを持参。グッズも九レプに向け新作を予定。",
+   web:"https://powarep.official.ec/"},
+  {num:"T-19",area:"b",local:false,featured:false,name:"灰の樹",tags:["レオパ"],
+   desc:"元気なレオパを持参。",
+   twitter:"https://x.com/hainoki_rep"},
+  {num:"T-20",area:"b",local:false,featured:true,name:"レオパルド",tags:["ブラックナイト","レオパ系"],
+   desc:"ブラックナイトをお探しの方はこちら。",
+   web:"http://blog.livedoor.jp/leoparudnoleopa/"},
+  {num:"T-21",area:"b",local:true,featured:false,name:"レオパの尋屋",tags:["レオパ","大分"],
+   desc:"大分県からの出展。",
+   web:"https://instabio.cc/leopanojinya"},
+  {num:"T-22",area:"b",local:false,featured:false,name:"niko.momo",tags:["小動物","カメ","モモンガグッズ","大阪"],
+   desc:"大阪から2回目の出店。可愛いもふもふ達とカメさんを持参。モモンガさんのポーチなども販売。"},
+  {num:"T-23",area:"b",local:false,featured:false,name:"mofu and co.",tags:["フクロモモンガ","アフリカヤマネ","小動物フード","三重"],
+   desc:"三重県からの出店。フクロモモンガ・アフリカヤマネとたくさんのフード・おやつ・飼育用品を販売。",
+   web:"http://www.mofuandco.com"},
+  {num:"T-24",area:"b",local:false,featured:true,name:"Gallery ek tawido",tags:["焼き絵","アクセサリー","手作り一点物"],
+   desc:"焼き絵師Kazumiとアクセサリー作家上村仁美の2人ユニット。生き物をモチーフとしたグッズを制作。手作業による一点物が殆ど。",
+   twitter:"https://x.com/ektawido"},
+  {num:"T-25",area:"b",local:false,featured:false,name:"Ren",tags:["爬虫類全般","毎回参加"],
+   desc:"毎回楽しみな九州爬虫類フェスに今回も出店。",
+   twitter:"https://x.com/Ren20221025"},
+  {num:"T-26",area:"b",local:true,featured:true,name:"Leon",tags:["フトアゴ","カメレオン","レオパ","自家繁殖","福岡"],
+   desc:"福岡県のブリーダーLeon。フトアゴ・カメレオン・レオパ・昆虫・カエル・ヤマネなど自家繁殖した可愛い個体を持参。",
+   instagram:"https://www.instagram.com/leon__2024"},
+  {num:"T-27",area:"b",local:false,featured:false,name:"エキゾアニマルF&Y",tags:["トカゲ","モモンガ","長崎"],
+   desc:"長崎県からの出店。可愛いトカゲやモモンガ達を持参。",
+   instagram:"https://www.instagram.com/exoanimal_f.y"},
+  {num:"T-28",area:"b",local:true,featured:false,name:"爬虫類ショップえるぺと",tags:["爬虫類全般","大分別府"],
+   desc:"大分県別府市からの地元出展。",
+   instagram:"https://www.instagram.com/erpeto06"},
+  {num:"T-29",area:"b",local:false,featured:true,name:"Mikage Pythons",tags:["アルバーティスパイソン","カーペットパイソン","自家繁殖","愛知"],
+   desc:"愛知県から九州初出店。自家繁殖のアルバーティスパイソンキミカやカーペットパイソンを中心に持参。",
+   twitter:"https://x.com/MikagePythons"},
+  {num:"T-30",area:"b",local:false,featured:true,name:"Cloe Reptiles",tags:["タマオヤモリ","自家繁殖","埼玉"],
+   desc:"埼玉県からの出展。自家繁殖のタマオヤモリを多数持参。",
+   twitter:"https://twitter.com/CloeReptiles"},
+  {num:"T-31",area:"b",local:false,featured:false,name:"VIVA REPTILE",tags:["ボールパイソン","自家繁殖"],
+   desc:"自家繁殖のボールパイソンを持参。"},
+  {num:"T-32",area:"b",local:false,featured:true,name:"Dsuke",tags:["ガールズイラスト","爬虫類イラスト","グッズ"],
+   desc:"ガールズイラストと爬虫類を組み合わせたイラストから、ゆるいイラストまで幅広く展開。ステッカー・アクリルキーホルダー・イラスト集など様々なオリジナルグッズを販売予定。",
+   web:"https://dsuke4649.wixsite.com/dsuke"},
+  {num:"T-33",area:"b",local:false,featured:false,name:"株式会社KOBU JAPAN",tags:["爬虫類全般","輸入業者"],
+   desc:"最新の入荷情報はHPもしくはXのアカウントにて確認を。",
+   web:"https://kobujapanltd.jp/"},
+  {num:"T-34",area:"b",local:false,featured:false,name:"やもはち屋",tags:["ヤモリ","兵庫"],
+   desc:"兵庫県からヤモリを中心に持参。",
+   web:"https://e88geckos.wixsite.com/my-site-12"},
+  {num:"T-35",area:"b",local:false,featured:false,name:"Bamboo horse reptiles",tags:["爬虫類全般","山口"],
+   desc:"山口県でショップを運営。皆様にお会いできることを楽しみにしている。"},
+  {num:"T-36",area:"b",local:true,featured:false,name:"KleinesGlück",tags:["自家繁殖","大分豊後高田","初出店"],
+   desc:"大分県豊後高田市から記念すべき初出店。九レプに出店することを目標に頑張ってきた。小規模ブリーディングならではの懐いた可愛い子達を持参。",
+   instagram:"https://www.instagram.com/kleinesgluck.1225"},
+  {num:"T-37",area:"b",local:true,featured:false,name:"LeoLiza",tags:["自家繁殖","福岡地元"],
+   desc:"地元福岡からの出店。自家繁殖の子達を持参。",
+   instagram:"https://www.instagram.com/leoliza_fkk"},
+  {num:"T-38",area:"b",local:false,featured:true,name:"ともえ屋",tags:["ハンドメイドシェルター","造形作品","奈良"],
+   desc:"奈良県からの出店。ハンドメイドによるオリジナルシェルター他、レイアウト用造形作品を制作・販売。",
+   web:"https://tomoeya.base.shop/"},
+  {num:"T-39",area:"b",local:false,featured:false,name:"甘とレプタイルズ",tags:["爬虫類全般","2026年のみ"],
+   desc:"2026年は都合により今回のみの出展となる見込み。",
+   twitter:"https://x.com/amarep_000"},
+  {num:"T-40",area:"b",local:false,featured:false,name:"うたかた",tags:["爬虫類絵画","グッズ","オーダー受注"],
+   desc:"爬虫類をモチーフにした絵画やグッズの販売。オーダー受注も承る。",
+   web:"https://lit.link/gabnihonga"},
+  {num:"T-41",area:"b",local:true,featured:true,name:"TARTARUGA（スジコスジオ）",tags:["カメ専門","ブリーダー","熊本","10種類"],
+   desc:"熊本市からの地元出展。アッサムセタカガメ・ニシキハコガメ・フロリダハコガメなどカメ10種を繁殖。",
+   web:"http://kasimiro.blog65.fc2.com/"},
+  {num:"T-42",area:"b",local:false,featured:false,name:"カメのたね",tags:["カメ","ブリード"],
+   desc:"ブリードした状態抜群のカメ達を持参。"},
+  {num:"T-43",area:"b",local:false,featured:true,name:"小動物のフード＆おやつOhagiおはぎ",tags:["小動物おやつ","雑貨","大阪","推し活グッズ"],
+   desc:"大阪から博多に舞い戻る人気ショップ。O'hagiオリジナルの「うちの子推し活」おやつが盛りだくさん。日常使いできる可愛い雑貨も増量中。",
+   web:"https://treatsohagi.thebase.in/"},
+  {num:"T-44",area:"b",local:false,featured:false,name:"Ogi",tags:["自家ブリード","爬虫類","愛知"],
+   desc:"愛知からの出展。自家ブリードのかわい子ちゃん達と待っている。",
+   instagram:"https://www.instagram.com/satomin_ogi"},
+  {num:"T-45",area:"b",local:false,featured:false,name:"Maples world",tags:["爬虫類全般","福岡大好き"],
+   desc:"大好きな福岡でたくさんの皆様にお会いできることを楽しみにしている。",
+   instagram:"https://www.instagram.com/maple.s_world_shop"},
+  {num:"T-46",area:"b",local:false,featured:true,name:"San37Nana",tags:["爬虫類デザイングッズ","ヴィンテージ感","九州初上陸"],
+   desc:"爬虫類デザイングッズSan37Nana（サンナナ）が九州初上陸。「新しさの中に宿るヴィンテージ感」を軸に、長く愛用できるクリエイションを届ける。",
+   web:"https://san37nana.jimdofree.com/"},
+  {num:"T-47",area:"b",local:false,featured:false,name:"ケイティママ",tags:["爬虫類全般","大阪"],
+   desc:"大阪からの出展。"},
+  {num:"T-48",area:"b",local:false,featured:true,name:"いきものクッキーアート専門店 kurimaro collection",tags:["クッキーアート","一点物","生きものモチーフ"],
+   desc:"生きものをモチーフにしたクッキーアート専門店。全てオリジナルで型から手作りした生きものの特徴を表現したアートなクッキー。",
+   web:"http://cookie-kurimaro.com"},
+  {num:"T-49",area:"b",local:true,featured:false,name:"ペットショップセレクト",tags:["爬虫類全般","大分"],
+   desc:"大分県から出店。"},
+  {num:"T-50",area:"b",local:false,featured:true,name:"Hamoon",tags:["グッズ","木材・アクリル・レザー・レジン","一点物"],
+   desc:"爬虫類・両生類・小動物をモチーフとしたオリジナル創作グッズ。木材・アクリル・レザー・レジン・木の実など様々な素材を使用した小物・アクセサリー・立体造型物を制作・販売。",
+   twitter:"https://x.com/hakkanx86"},
+  {num:"T-51",area:"b",local:false,featured:false,name:"Cold I's",tags:["爬虫類全般"],
+   desc:"今年もよろしく。",
+   web:"https://coldis.theshop.jp/"},
+  {num:"T-52",area:"b",local:false,featured:false,name:"ありまる商店",tags:["爬虫類・両生類モチーフ","オリジナルグッズ","埼玉"],
+   desc:"埼玉から出店。爬虫類・両生類モチーフのオリジナルグッズのお店。",
+   web:"https://arimarushoten.stores.jp/"},
+  {num:"T-53",area:"b",local:false,featured:false,name:"みのじ",tags:["Tシャツ","キーホルダー","千葉"],
+   desc:"千葉県から来場。カメ・カエル・ダンゴムシ・ヤギなど色々な生き物モチーフのTシャツやキーホルダー等を販売。",
+   web:"https://minoji.base.shop"},
+  {num:"T-54",area:"b",local:false,featured:false,name:"ise reptiles",tags:["自家繁殖","爬虫類全般","三重伊勢"],
+   desc:"三重県伊勢市からの出店。自家繁殖を中心に持参。",
+   instagram:"https://www.instagram.com/ise.reptiles"},
+  {num:"T-55",area:"b",local:false,featured:true,name:"LINK pogona farm",tags:["フトアゴ専門","自家ブリード","三重"],
+   desc:"三重県よりフトアゴヒゲトカゲ専門店として初出店。自家ブリードのフトアゴを多数持参。",
+   twitter:"https://x.com/aqua_tanukiti"},
+  {num:"T-56",area:"b",local:false,featured:true,name:"#LEVECHI OSAKA",tags:["消臭除菌スプレー","世界初","大阪","爬虫類専用"],
+   desc:"世界初の爬虫類専用消臭除菌抗菌洗浄スプレー「#LEVECHI」を開発。3年の開発期間を経て今では大人気商品に。イベント最安値で販売予定。",
+   web:"https://levechi.theshop.jp/"},
+  {num:"T-57",area:"b",local:false,featured:true,name:"株式会社エムピージェー（ビバリウムガイド）",tags:["爬虫類雑誌","ビバリウムガイド","バックナンバー"],
+   desc:"爬虫類・両生類飼育情報誌『季刊ビバリウムガイド』の出版社。最新号はもちろんバックナンバーも販売。トークショーゲスト・冨水明編集長の著書も要チェック。",
+   web:"https://www.mpj-aqualife.com/"},
+  {num:"T-58",area:"b",local:false,featured:false,name:"蒼天",tags:["自家繁殖","累代25年","良質生体"],
+   desc:"累代で約25年自家繁殖した良質な生体を提供。"},
+  {num:"T-59",area:"b",local:true,featured:true,name:"Skull Craft",tags:["レザークラフト","フィギュア","爬虫類デザイン","糸島"],
+   desc:"福岡県糸島市より出店。爬虫類デザインを取り入れたレザークラフト製品やデフォルメフィギュアを持参。"},
+  {num:"T-60",area:"b",local:true,featured:false,name:"Ai.Noah",tags:["小鳥","餌","福岡直方市"],
+   desc:"福岡県直方市で小鳥や小鳥の餌を販売するAi.Noah。",
+   instagram:"https://www.instagram.com/ai_noah"},
+  {num:"T-61",area:"b",local:false,featured:false,name:"Cute animal みみんが",tags:["フクロモモンガ","小動物","人慣れ","宮崎"],
+   desc:"宮崎県のCute animal みみんが。フクロモモンガをはじめ、キュートで人慣れしやすい子達を持参。",
+   instagram:"https://www.instagram.com/cute_animal_miminga"},
+  {num:"T-62",area:"b",local:false,featured:true,name:"リクガメハンちゃん",tags:["リクガメモチーフ","アクセサリー","2回目"],
+   desc:"前回に引き続き2回目の九州。リクガメをモチーフとした他にはないアイテムを用意。",
+   web:"https://rikugame_hannchann.shop-inframe.jp/"},
+  {num:"T-63",area:"b",local:true,featured:false,name:"悠遊",tags:["イモリ","ブリーダー","福津市"],
+   desc:"福岡県福津市でイモリのブリーダーをしている。可愛いイモリを持参。",
+   web:"https://9nu3ca.wixsite.com/medakayayuyu"},
+  {num:"T-64",area:"b",local:false,featured:false,name:"有限会社エル商会 九州営業所",tags:["飼育飼料","Mazuri","卸商社"],
+   desc:"ペット用品卸商社のエル商会。エキゾチックアニマル飼料のMazuri（マズリ）の試供品・リーフレットを案内。",
+   web:"https://www.l-shokai.co.jp/"},
+  {num:"T-65",area:"b",local:false,featured:true,name:"株式会社キョーリン",tags:["飼育フード","サンプル配布","爬虫類・両生類・小動物・鳥"],
+   desc:"新商品のサンプルを無料配布！爬虫類・両生類・小動物・鳥のフードサンプルを用意。",
+   web:"https://www.kyorin-net.co.jp/"},
+  {num:"T-66",area:"b",local:false,featured:false,name:"ぷくぷくインテリア",tags:["フクロモモンガ","ショウガラゴ","ハンドメイドポーチ"],
+   desc:"フクロモモンガやショウガラゴなど小動物向けのハンドメイドポーチを製作・販売。普段はオンライン販売中心なので直接見て触れる貴重な機会。",
+   instagram:"https://www.instagram.com/pukupuku_interior"},
+  {num:"T-67",area:"b",local:true,featured:true,name:"レオパード（テーブル）",tags:["爬虫類全般","小動物","昆虫","生き餌","北九州"],
+   desc:"北九州市八幡西区で爬虫類・両生類・小動物・昆虫・生き餌などを販売する地元九州のショップ。"},
+  {num:"T-68",area:"b",local:false,featured:false,name:"RFC",tags:["ミズガメ","アメハコ","ボールパイソン","ニシアフ","レオパ","栃木"],
+   desc:"栃木県那須塩原市の爬虫類専門店。ミズガメ・アメハコ・ボールパイソン・ニシアフ・レオパを販売。",
+   web:"https://bp-rfc.com/"},
+  {num:"T-69",area:"b",local:false,featured:false,name:"アートルゴッサ",tags:["爬虫類油絵","イラスト","滋賀"],
+   desc:"滋賀県からの参加。爬虫類の油絵やイラストを描く。"},
+  {num:"T-70",area:"b",local:true,featured:true,name:"ドワーフ商会",tags:["奇蟲","ワラジムシ","植物","福岡"],
+   desc:"福岡県からの地元出店。奇蟲を中心に餌用ワラジムシや植物など面白いものを持参。",
+   twitter:"https://x.com/pyonndmvgls4rte"},
+  {num:"T-71",area:"b",local:true,featured:false,name:"くるくるBox",tags:["爬虫類","奇蟲","両生類","小動物","鳥","福岡城南区"],
+   desc:"福岡市城南区にペットショップを構える。爬虫類・奇蟲・両生類・小動物・鳥など多様な生体を取り扱う。",
+   twitter:"https://x.com/megaka10"},
+  {num:"T-72",area:"b",local:true,featured:true,name:"ワラダンキングダム",tags:["ダンゴムシ","ワラジムシ","奇蟲","福岡"],
+   desc:"福岡でダンゴムシ・ワラジムシのブリードを行う地元ショップ。奇虫飼育の魅力を広め、普段余り目にしない昆虫達を多数持参。"},
+];
+
+let curFilter = 'all';
+let curSearch = '';
+
+function filterEx(type, btn) {
+  curFilter = type;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+function searchEx(v) { curSearch = v; render(); }
+
+function render() {
+  const GOODS_TAGS = ["グッズ","アート","イラスト","刺繡グッズ","アクセサリー","手作り一点物","焼き絵","クッキーアート","Tシャツ","レザークラフト","飼育用品","メーカー","飼育フード"];
+  const filtered = exhibitors.filter(e => {
+    const f = curFilter;
+    if (f === 'featured' && !e.featured) return false;
+    if (f === 'local' && !e.local) return false;
+    if (f === 'area-a' && e.area !== 'a') return false;
+    if (f === 'area-b' && e.area !== 'b') return false;
+    if (f === 'goods' && !e.tags.some(t => GOODS_TAGS.some(g => t.includes(g)))) return false;
+    if (curSearch) {
+      const q = curSearch.toLowerCase();
+      if (!e.name.toLowerCase().includes(q) && !e.tags.join(' ').toLowerCase().includes(q) && !(e.desc||'').toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
+
+  document.getElementById('resultCount').textContent = filtered.length + '件 表示中（全' + exhibitors.length + '店舗）';
+
+  const grid = document.getElementById('exhibitorsGrid');
+  grid.innerHTML = filtered.map(e => {
+    const hasLink = e.instagram || e.twitter || e.web;
+    const cls = ['exhibitor-card', e.featured?'featured':'', e.local?'local':'', hasLink?'has-link':''].filter(Boolean).join(' ');
+    return '<div class="' + cls + '" onclick=\'openModal("' + e.num + '")\'>' +
+      '<div class="exhibitor-num">' + (e.area==='a'?'エリア':'テーブル') + ' ' + e.num + (e.featured?' ⭐':'') + (e.local?' 🏠':'') + '</div>' +
+      '<div class="exhibitor-name">' + e.name + '</div>' +
+      '<div class="exhibitor-tag">' + ((e.tags||[])[0]||'') + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function openModal(num) {
+  const e = exhibitors.find(x => x.num === num || x.num == num);
+  if (!e) return;
+  document.getElementById('modalNum').textContent = (e.area==='a'?'エリアブース':'テーブルブース') + ' No.' + e.num + (e.local?' 🏠 地元九州':'');
+  document.getElementById('modalName').textContent = e.name;
+
+  const tags = [...(e.tags||[])];
+  if (e.featured) tags.push('⭐ 注目ショップ');
+  document.getElementById('modalTags').innerHTML = tags.map(t =>
+    '<span class="modal-tag" style="' + (t.includes('⭐')?'border-color:var(--gold);color:var(--gold);':'') + '">' + t + '</span>').join('');
+
+  document.getElementById('modalDesc').innerHTML = e.desc
+    ? '<p>' + e.desc + '</p>'
+    : '<p style="color:var(--text-dim);font-style:italic;">詳細情報は<a href="https://q-reptile.com/fukuoka/shop/" target="_blank" style="color:var(--green-bright);">公式サイト</a>をご確認ください。</p>';
+
+  const links = document.getElementById('modalLinks');
+  links.innerHTML = '';
+  if (e.instagram) links.innerHTML += '<a href="' + e.instagram + '" target="_blank" class="modal-link">📸 Instagram</a>';
+  if (e.twitter) links.innerHTML += '<a href="' + e.twitter + '" target="_blank" class="modal-link">🐦 X / Twitter</a>';
+  if (e.web) links.innerHTML += '<a href="' + e.web + '" target="_blank" class="modal-link gold">🌐 公式サイト・ショップ</a>';
+  if (!e.instagram && !e.twitter && !e.web) {
+    links.innerHTML = '<span style="color:var(--text-dim);font-size:.85rem;">🔗 <a href="https://q-reptile.com/fukuoka/shop/" target="_blank" style="color:var(--green-bright);">公式サイトで詳細確認</a></span>';
+  }
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModalBg(e) { if (e.target.id === 'modalOverlay') closeModal(); }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); document.body.style.overflow = ''; }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 80);
+});
+render();
+</script>
+</body>
+</html>

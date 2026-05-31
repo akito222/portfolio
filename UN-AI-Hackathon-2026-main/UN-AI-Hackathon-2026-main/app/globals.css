@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Tailwind/shadcn variables */
+    --background: 220 14% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 220 14% 96%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 221 83% 53%;
+    --radius: 0.5rem;
+
+    /* Semantic color tokens */
+    --c-brand:       #1B3A6B;   /* UN navy — logo/brand only */
+    --c-action:      #2563EB;   /* Clickable elements only */
+    --c-action-h:    #1D4ED8;   /* Action hover */
+
+    --c-p6:          #7C3AED;   /* Pillar 6 category (violet) */
+    --c-p6-bg:       #F5F3FF;
+    --c-p6-border:   #DDD6FE;
+
+    --c-p7:          #0891B2;   /* Pillar 7 category (cyan) */
+    --c-p7-bg:       #ECFEFF;
+    --c-p7-border:   #A5F3FC;
+
+    --c-ok:          #059669;   /* Compliant / Approved / Indexed */
+    --c-ok-bg:       #ECFDF5;
+    --c-ok-border:   #A7F3D0;
+
+    --c-warn:        #D97706;   /* Partial / Flagged / Attention */
+    --c-warn-bg:     #FFFBEB;
+    --c-warn-border: #FDE68A;
+
+    --c-err:         #DC2626;   /* Missing / Error */
+    --c-err-bg:      #FEF2F2;
+    --c-err-border:  #FECACA;
+
+    --c-neutral:     #6B7280;   /* Pending / Not started */
+    --c-neutral-bg:  #F9FAFB;
+    --c-neutral-border: #E5E7EB;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: #F9FAFB;
+    color: #111827;
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+
+  /* Pillar tag utilities */
+  .tag-p6 {
+    background: var(--c-p6-bg);
+    color: var(--c-p6);
+    border: 1px solid var(--c-p6-border);
+  }
+  .tag-p7 {
+    background: var(--c-p7-bg);
+    color: var(--c-p7);
+    border: 1px solid var(--c-p7-border);
+  }
+
+  /* State badge utilities */
+  .badge-ok {
+    background: var(--c-ok-bg);
+    color: var(--c-ok);
+    border: 1px solid var(--c-ok-border);
+  }
+  .badge-warn {
+    background: var(--c-warn-bg);
+    color: var(--c-warn);
+    border: 1px solid var(--c-warn-border);
+  }
+  .badge-err {
+    background: var(--c-err-bg);
+    color: var(--c-err);
+    border: 1px solid var(--c-err-border);
+  }
+  .badge-neutral {
+    background: var(--c-neutral-bg);
+    color: var(--c-neutral);
+    border: 1px solid var(--c-neutral-border);
+  }
+
+  /* Confidence coloring — metric only, not state */
+  .conf-high { color: var(--c-ok); }
+  .conf-mid  { color: var(--c-warn); }
+  .conf-low  { color: var(--c-err); }
+
+  .scrollbar-thin::-webkit-scrollbar { width: 3px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 2px; }
+}

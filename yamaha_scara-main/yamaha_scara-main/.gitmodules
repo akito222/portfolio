@@ -1,0 +1,3 @@
+[submodule "yk400xe_ros2"]
+	path = yk400xe_ros2
+	url = https://github.com/Sappy27/yk400xe_ros2.git

@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robot">
+    <xacro:include filename="$(find yk400xe_description)/urdf/yk400xe.urdf.xacro" />
+
+    <material name="gray">
+        <color rgba="0.8 0.8 0.8 1"/>
+    </material>
+
+    <link name="stand">
+        <visual>
+            <material name="gray" />
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://scara_description/meshes/stand.stl" scale="1 1 1"/>
+            </geometry>
+        </visual>
+    </link>
+    <joint name="stand_joint" type="fixed">
+        <parent link="base_link"/>
+        <child  link="stand"/>
+        <origin xyz="0 -0.04 -0.2" rpy="0 0 0"/>
+    </joint>
+
+    <link name="table">
+        <visual>
+            <material name="gray" />
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://scara_description/meshes/table.stl" scale="1 1 1"/>
+            </geometry>
+        </visual>
+    </link>
+    <joint name="table_joint" type="fixed">
+        <parent link="stand"/>
+        <child  link="table"/>
+        <origin xyz="0.0 0.07025 0.0" rpy="0 0 0"/>
+    </joint>
+
+</robot>

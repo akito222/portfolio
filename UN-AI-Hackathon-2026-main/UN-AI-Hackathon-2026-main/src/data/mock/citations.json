@@ -1,0 +1,44 @@
+[
+  {
+    "id": "cit_001",
+    "doc_id": "doc_001",
+    "article": "第24条",
+    "article_en": "Article 24",
+    "section": "第1項",
+    "verbatim_ja": "個人情報取扱事業者は、外国にある第三者に個人データを提供する場合には、あらかじめ外国にある第三者への提供を認める旨の本人の同意を得なければならない。",
+    "verbatim_en": "A personal information handling business operator shall, when providing personal data to a third party in a foreign country, obtain in advance the consent of the individual to the provision to a third party in a foreign country.",
+    "pillar": "Pillar 6",
+    "indicator": "6.2 Cross-border data transfer conditions",
+    "confidence": 0.94,
+    "discovery_method": "semantic",
+    "reviewed": false
+  },
+  {
+    "id": "cit_002",
+    "doc_id": "doc_003",
+    "article": "Section 48",
+    "article_en": "Section 48",
+    "section": "Subsection (1)",
+    "verbatim_ja": null,
+    "verbatim_en": "A data controller shall not transfer personal data to a foreign country or international organisation unless the country or international organisation ensures an adequate level of data protection.",
+    "pillar": "Pillar 6",
+    "indicator": "6.1 Data localisation requirements",
+    "confidence": 0.91,
+    "discovery_method": "keyword",
+    "reviewed": true
+  },
+  {
+    "id": "cit_003",
+    "doc_id": "doc_002",
+    "article": "มาตรา 37",
+    "article_en": "Section 37",
+    "section": null,
+    "verbatim_ja": null,
+    "verbatim_en": "The data controller shall notify the data subject of the purpose of collection, use and disclosure of personal data.",
+    "pillar": "Pillar 7",
+    "indicator": "7.1 Data subject rights",
+    "confidence": 0.88,
+    "discovery_method": "semantic",
+    "reviewed": false
+  }
+]

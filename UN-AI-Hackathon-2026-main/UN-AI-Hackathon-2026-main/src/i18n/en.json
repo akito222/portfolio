@@ -1,0 +1,128 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "search": "Legal Search",
+    "audit": "Audit View",
+    "mapping": "Pillar Mapping",
+    "title": "UN Trade AI"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "AI-powered regulatory document analysis for digital trade",
+    "stats": {
+      "documents": "Documents Indexed",
+      "countries": "Countries Covered",
+      "citations": "Mapped Citations",
+      "reviewed": "Reviewed Citations"
+    },
+    "recent": {
+      "title": "Recently Added Documents",
+      "country": "Country",
+      "document": "Document",
+      "pillar": "Pillar",
+      "score": "Confidence",
+      "status": "Status",
+      "crawled": "Crawled"
+    },
+    "system": {
+      "title": "System Status",
+      "crawlerStatus": "Crawler",
+      "indexStatus": "Index",
+      "apiStatus": "API",
+      "operational": "Operational",
+      "indexed": "Indexed"
+    }
+  },
+  "search": {
+    "title": "Legal Document Search",
+    "subtitle": "Search and explore regulatory documents mapped to UN RDTII standards",
+    "placeholder": "Search by keyword, article, or concept...",
+    "filters": {
+      "country": "Country",
+      "allCountries": "All Countries",
+      "language": "Language",
+      "allLanguages": "All Languages",
+      "pillar": "Pillar",
+      "allPillars": "All Pillars"
+    },
+    "results": {
+      "found": "result(s) found",
+      "noResults": "No results found. Try different keywords.",
+      "confidence": "Confidence",
+      "indicator": "Indicator",
+      "method": "Method",
+      "reviewed": "Reviewed",
+      "article": "Article",
+      "document": "Document"
+    },
+    "modal": {
+      "title": "Citation Detail",
+      "originalText": "Original Text",
+      "englishText": "English Translation",
+      "sourceDocument": "Source Document",
+      "close": "Close"
+    }
+  },
+  "audit": {
+    "title": "Audit View",
+    "subtitle": "Review AI-extracted citations for human validation",
+    "snippet": {
+      "title": "Extracted Snippet",
+      "pillarTag": "Pillar Tag",
+      "indicator": "Indicator",
+      "confidence": "Confidence Score",
+      "method": "Discovery Method",
+      "original": "Original Text",
+      "english": "English"
+    },
+    "source": {
+      "title": "Source Document Preview",
+      "highlight": "Highlighted match"
+    },
+    "review": {
+      "approve": "Approve",
+      "flag": "Flag for Review",
+      "approved": "Approved",
+      "flagged": "Flagged",
+      "status": "Review Status",
+      "pending": "Pending Review"
+    },
+    "navigation": {
+      "previous": "Previous",
+      "next": "Next",
+      "of": "of"
+    }
+  },
+  "mapping": {
+    "title": "Pillar Mapping Results",
+    "subtitle": "UN RDTII compliance status by country",
+    "export": "Export CSV",
+    "table": {
+      "country": "Country",
+      "pillar6": "Pillar 6",
+      "pillar7": "Pillar 7",
+      "documents": "Documents",
+      "citations": "Citations",
+      "details": "Details"
+    },
+    "status": {
+      "compliant": "Compliant",
+      "partial": "Partial",
+      "missing": "No Data"
+    },
+    "detail": {
+      "article": "Article",
+      "indicator": "Indicator",
+      "confidence": "Confidence"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error loading data",
+    "language": "Language",
+    "semantic": "Semantic",
+    "keyword": "Keyword",
+    "yes": "Yes",
+    "no": "No"
+  }
+}
