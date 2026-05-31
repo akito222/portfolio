@@ -67,11 +67,45 @@ UN主催「Global Hackathon on AI for Digital Trade Regulatory Analysis」提出
 
 ## Skills
 
-- **Languages**: Python · TypeScript · JavaScript · C++ · Bash
-- **Frontend**: Next.js · React · Tailwind CSS · shadcn/ui · Vanilla JS
-- **Robotics**: ROS2 · URDF · モーション制御
-- **AI/ML**: RAGシステム設計 · プロンプトエンジニアリング · Claude API
-- **Tools**: Git · Streamlit · MoviePy · VOICEVOX
+### 🐍 Python `経験 2年`
+**レベル**: 中級 ／ **目的**: データ処理・自動化・アプリ開発  
+大学の研究活動および個人開発で習得。Streamlit を用いた Web アプリ、MoviePy による動画自動生成、NumPy を使った並列レンダリングなど実用的なツール開発に活用。VOICEVOX API との連携でナレーション付き動画生成アプリ（Vlog Maker）を開発。
+
+---
+
+### 🤖 ROS2 `経験 1年`
+**レベル**: 中級 ／ **目的**: 産業用ロボット制御・研究
+九州工業大学 Hayashi Lab にて Yamaha YK400XE SCARA ロボットの制御パッケージを開発・保守。ROS2 サービス／トピックを用いた PC–ロボット通信、GUI コントロール（関節値・標準座標）、真空システム制御を実装。2026年9月よりプロジェクトメンテナーとして担当。
+
+---
+
+### 🌐 HTML / CSS `経験 3年`
+**レベル**: 中上級 ／ **目的**: フロントエンド Web 制作  
+外部ライブラリに頼らない Vanilla JS での実装を得意とする。九州爬虫類フェス 2026 の非公式ファンサイトでは 167 店舗分のデータを単一 HTML ファイルにまとめ、CSS 変数・`clip-path`・`@keyframes` アニメーション・リアルタイム検索フィルターをゼロ依存で実装。
+
+---
+
+### ⚛️ TypeScript / Next.js / React `経験 3ヶ月`
+**レベル**: 初中級 ／ **目的**: モダン Web アプリ開発  
+UN AI ハッカソン（2026）に向けて短期集中で習得。Next.js 14 App Router・Tailwind CSS・shadcn/ui を用いた RAG フロントエンドを構築。next-intl による英語/日本語 i18n、API Routes によるバックエンド設計まで一気通貫で実装。
+
+---
+
+### 🎬 Streamlit `経験 5ヶ月`
+**レベル**: 初中級 ／ **目的**: Python 製 Web アプリの迅速な UI 構築  
+Vlog Maker アプリの UI フレームワークとして採用。動画素材アップロード・台本入力・シーン別プレビューを Streamlit で実現。`concurrent.futures` による並列処理と SHA-256 ハッシュキャッシュ機構を組み合わせ、レンダリング速度を大幅改善。
+
+---
+
+### 🔧 Git `経験 2年`
+**レベル**: 中級 ／ **目的**: バージョン管理・チーム開発  
+個人・研究室プロジェクトで継続利用。ブランチ運用・コンフリクト解消・リモートリポジトリ管理を習得。Yamaha ロボットプロジェクトのメンテナー業務でリポジトリ管理を担当。
+
+---
+
+### 🤖 Claude API / AI `経験 2ヶ月`
+**レベル**: 初級 ／ **目的**: AI 機能のアプリ組み込み・RAG システム設計  
+UN AI ハッカソンでプロンプトエンジニアリングおよび RAG アーキテクチャを学習。各国法令文書の自動収集・解析・UN 基準マッピングのシステム設計に携わる。Claude Code を活用した AI 駆動開発フローも実践中。
 
 ---
 
