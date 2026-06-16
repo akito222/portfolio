@@ -26,7 +26,7 @@ UN主催「Global Hackathon on AI for Digital Trade Regulatory Analysis」提出
 **[`yamaha_scara-main/`](./yamaha_scara-main/yamaha_scara-main)**
 
 九州工業大学 Hayashi Lab で運用中の Yamaha YK400XE SCАRAロボット向け ROS2 パッケージ群。  
-2026年9月よりメンテナー担当。
+2025年9月よりメンテナー担当。
 
 | 項目 | 内容 |
 |------|------|
