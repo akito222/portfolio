@@ -52,7 +52,7 @@ kawabata.akito768@mail.kyutech.jp
 ### 2. Yamaha SCARA Robot ROS2 制御パッケージ
 **[`yamaha_scara-main/`](./yamaha_scara-main/yamaha_scara-main)**
 
-九州工業大学 Hayashi Lab の Yamaha YK400XE 向け ROS2 制御パッケージ群。2026年9月よりメンテナー担当。
+九州工業大学 Hayashi Lab の Yamaha YK400XE 向け ROS2 制御パッケージ群。2025年9月より始動。
 
 | 項目 | 内容 |
 |------|------|
