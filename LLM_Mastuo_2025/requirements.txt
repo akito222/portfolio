@@ -1,0 +1,13 @@
+torch>=2.2
+torchvision
+torchaudio
+numpy
+matplotlib
+pandas
+transformers
+datasets
+tqdm
+jupyterlab
+accelerate
+peft
+trl
