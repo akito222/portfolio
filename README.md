@@ -293,13 +293,9 @@ UN主催「Global Hackathon on AI for Digital Trade Regulatory Analysis」提出
 
 **レベル**: 中級 ／ **動作環境**: Ubuntu 22.04 / ROS2 Humble / Yamaha RCX340
 
-**技術選定理由**: ROS1 ではなく ROS2 を選択した理由は、DDS 通信による分散ノード対応・ライフサイクル管理・QoS 設定の柔軟性。また Yamaha 社提供ドライバの ROS2 移植版（yk400xe_ros2）が存在し、0から通信ドライバを実装するコストを避けられた。
-
 | 実装 | パターン | 数値 |
 |------|---------|------|
 | GUI → ロボット | tkinter イベント → ROS2 Service 呼び出し | レスポンス: コントローラ依存（通常 < 100ms） |
-| 真空制御 | `/set_vacuum` サービス（std_srvs/SetBool） | ON/OFF 切替のみ、ポンプ起動遅延あり |
-| 動作速度 | 最大速度の 30% 以下を推奨 | 高速＋大変位で振動・転倒リスクのため安全マージン設定 |
 
 ---
 
@@ -355,15 +351,8 @@ UN主催「Global Hackathon on AI for Digital Trade Regulatory Analysis」提出
 
 **レベル**: 初中級 ／ **動作環境**: Ubuntu 22.04 / CUDA対応GPU推奨 / Intel RealSense D435
 
-**技術選定理由**: 食材認識に YOLOv8-seg を採用した理由は、bbox 中心では密集・重なりのある食材で把持位置がずれるため、ピクセル単位のセグメンテーションマスクで正確な3D重心を得る必要があったから。
-
 | 指標 | 数値 | 条件 |
 |------|------|------|
-| ベースライン FPS | 11.2 FPS | YOLOv8-seg フル推論、解像度640、全フレーム |
-| 最終 FPS | **31.8 FPS** | bbox/seg ハイブリッド + 推論頻度削減 + 解像度調整 |
-| 平均レイテンシ | **34.4 ms** | ベースライン比: 89.3ms → 34.4ms（61%削減） |
-| seg 使用率 | 4.2% | 安定フレームは bbox のみ使用、不安定時のみ seg |
-| YOLO 処理時間比 | ~74% | 7フェーズ中のボトルネック |
 | 信頼度閾値 | 0.25 | CONF_TH = 0.25 |
 | 外れ値除去 | 中央値 ± 0.02m | Z_OUTLIER_TH = 0.02m |
 
@@ -402,13 +391,8 @@ UN主催「Global Hackathon on AI for Digital Trade Regulatory Analysis」提出
 
 **レベル**: 初中級 ／ **動作環境**: Isaac Sim 5.1 / Python 3.11 / on-policy（MAPPO・PPO）
 
-**技術選定理由**: 双腕の盛り付けは「相手の動きに合わせて協調タイミングを変える」動的タスクで、古典経路計画では扱いづらい。集中学習・分散実行（CTDE）を核とする MAPPO を採用し、単腕把持は土台として PPO で先に解く二段構成にした。
-
 | 実装/知見        | 内容                                             | 数値・効果                          |
 | ------------ | ---------------------------------------------- | ------------------------------ |
-| 学習の立ち上げ      | 報酬 shaping 改修でベースラインから右肩上がりの学習を確認       | −6.1 → 平均 47.6                 |
-| 単腕把持ポリシー     | PPO で把持動作を獲得                                | 把持成功率 100%（v7）                |
-| 報酬設計         | potential-based shaping で最適方策を壊さず接近誘導      | 「動かない均衡」を回避                   |
 | デバッグの学び      | 並列1環境×on-policy は脆く、成功が再現しない"幸運な均衡"に注意   | モデル退避ルールで4連敗を吸収            |
 
 ---
@@ -419,7 +403,7 @@ UN主催「Global Hackathon on AI for Digital Trade Regulatory Analysis」提出
 
 **レベル**: 初中級 ／ **動作環境**: ROS2 / MoveIt2 / C++ / Isaac Sim 連携
 
-**技術選定理由**: 配置のような確定動作は、強化学習の試行錯誤より古典経路計画の方が安定・再現性が高い。SRDF・kinematics.yaml・ompl_planning.yaml を構成し、C++ 計画ノードで grasp/place 軌道を CSV 出力、Isaac Sim でリプレイ検証する運用にした。
+**構成**: SRDF・kinematics.yaml・ompl_planning.yaml を構成し、C++ 計画ノードで grasp/place 軌道を CSV 出力、Isaac Sim でリプレイ検証する運用にした。
 
 | 実装         | 内容                                        | 補足                             |
 | ---------- | ----------------------------------------- | ------------------------------ |
