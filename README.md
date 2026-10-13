@@ -5,6 +5,23 @@ kawabata.akito768@mail.kyutech.jp
 
 ---
 
+## About
+
+**「認識（AI）× 制御（ロボット）」をつなぐフィジカルAIエンジニアを目指す修士学生です。**
+食材認識から把持・盛り付けまで、現場で動くロボットシステムを一気通貫で開発しています。
+
+| 領域 | 主な取り組み | 代表的な成果 |
+|------|------------|------------|
+| 🤖 ロボット × 強化学習 | 双腕ロボット Motoman SIA5 で MAPPO / PPO による協調動作の学習（修士研究） | 単腕把持ポリシーで把持成功率 100%（v7） |
+| 👁️ 画像認識 | YOLOv8-seg + RGB-D による食材認識・3D 重心推定 | 11.2 → 31.8 FPS（約 2.85 倍）に高速化 |
+| ⚙️ ロボット制御 | ROS2 / MoveIt2 による SCARA・双腕ロボットの制御と経路計画 | 研究室の SCARA 制御パッケージを開発・保守 |
+| 👥 チーム開発 | 30 名の多国籍チームでトマト収穫ロボットを開発 | トマト競技会 2025 テクニカルチャレンジ賞（2026 年はリーダー） |
+| 🌐 Web / アプリ | Next.js・Vanilla JS・Streamlit で短期間の開発 | UN 主催 AI ハッカソンに RAG デモを提出 |
+
+**主な技術**: Python / C++ / ROS2 / MoveIt2 / Isaac Sim / YOLO / OpenCV / 強化学習（MAPPO・PPO） / Autodesk Inventor / TypeScript
+
+---
+
 ## Projects
 
 ### 1. 弁当自動盛り付けシステム（卒業研究）
@@ -116,90 +133,7 @@ kawabata.akito768@mail.kyutech.jp
 
 ---
 
-### 4. UN Trade AI — RDTII Regulatory Analysis Demo
-**[`UN-AI-Hackathon-2026-main/`](./UN-AI-Hackathon-2026-main/UN-AI-Hackathon-2026-main)**
-
-UN主催「Global Hackathon on AI for Digital Trade Regulatory Analysis」提出作品。  
-各国の法令文書をAIで自動収集・解析し、UN基準（RDTII Pillar 6/7）へマッピングするRAGシステムのフロントエンド。
-
-| 項目 | 内容 |
-|------|------|
-| 動作環境 | Node.js 18.17以上 / npm 9以上 / ブラウザ（Chrome/Firefox/Safari） |
-| 対応言語 | 英語 / 日本語（URL: `/en/...` ↔ `/ja/...`） |
-| 対象データ | 5カ国（日本・タイ・ケニア・シンガポール・ブラジル）の法令文書 |
-| API設計 | FastAPI差し替えを想定した REST 設計（`BASE_URL` 環境変数で切替） |
-
-**実装パターン**
-
-| 画面 | 実装パターン |
-|------|------------|
-| ダッシュボード | `GET /api/stats` → StatsCard コンポーネントで KPI 表示 |
-| 法令検索 | クエリパラメータ（country / pillar / language / q）で JSON フィルタリング |
-| AI 監査ビュー | 引用スニペット左・元文書右の分割レイアウト、Approve/Flag ボタン |
-| Pillar マッピング | 国×Pillar の対応状況テーブル、CSV エクスポート |
-
-**技術選定理由**
-- **Next.js 14 App Router を採用した理由**: ハッカソンの短期間（数日）で i18n・API・UI を一気通貫で実装できる。Pages Router より Server Components による型安全な fetch が直感的
-- **shadcn/ui を採用した理由**: Radix UI ベースでアクセシビリティが保証済み。コンポーネントをソースコピーして管理するため、本番環境でのバンドルサイズ最適化が容易
-- **next-intl を採用した理由**: URL ベースのロケールルーティング（`/en/` `/ja/`）を middleware 1ファイルで実現でき、審査員が任意の言語でデモを確認できるようにした
-- **モックデータで FastAPI 差し替え対応設計にした理由**: ハッカソン期間中はバックエンドが未完成でも審査可能なデモを提供しつつ、実運用時の差し替えコストを最小化するため
-
----
-
-### 5. 九州爬虫類フェス 2026 — 非公式ファンサイト
-**[`reptiles/`](./reptiles)**
-
-2026年5月30〜31日開催「九州爬虫類フェス 2026」の非公式ファンサイト。
-
-| 項目 | 内容 |
-|------|------|
-| 動作環境 | 任意のモダンブラウザ（ビルドツール不要、HTML単体で動作） |
-| データ規模 | 167店舗（エリアブース95 + テーブルブース72） |
-| 外部依存 | Google Fonts のみ（CDN 1リクエスト） |
-| ファイル構成 | 単一 HTML ファイル（HTML + CSS + JS を完全内包） |
-
-**実装パターン**
-
-| 機能 | 実装パターン | 数値 |
-|------|------------|------|
-| キーワード検索 | `Array.filter()` で `name / tags / desc` を横断検索 | 167件をタイプごとに即時絞り込み（ブロッキングなし） |
-| フィルター | エリア別・注目・地元・グッズの4軸を `AND` 条件で組み合わせ | 最大4条件の複合絞り込み |
-| モーダル | `display: none / block` 切替 + ESCキー・背景クリックで閉じる | ライブラリ0依存 |
-| スクロール連動ナビ | `window.scrollY` 監視でヘッダースタイルを動的切替 | スクロール閾値 50px |
-| アニメーション | CSS `@keyframes` のみ（フェードイン・シマー・スウェイ） | JS アニメーションなし |
-
-**技術選定理由**
-- **Vanilla JS / ゼロ依存を選択した理由**: イベント当日に現地でファイルを渡す想定のため、npm install や CDN 障害のリスクをゼロにする必要があった。単一 HTML ファイルでオフライン動作を保証
-- **フレームワーク（React/Vue 等）を使わなかった理由**: 167件のフィルタ・検索程度の処理は Vanilla JS の `Array.filter()` で十分高速。仮想 DOM のオーバーヘッドを避け、初期ロードを最小化
-- **データ収集に AI（Claude）を活用した理由**: 公式サイトの167店舗をスクレイピング → チラシ写真の OCR → SNS 検索という3段階を手動で行うと数十時間かかる作業を、AI ツール活用で大幅に短縮
-
----
-
-### 6. Vlog Maker App
-**[`Vlogapp/`](./Vlogapp)**
-
-動画素材・テキスト台本を入力すると、自動でナレーション付きVlog動画を生成するStreamlitアプリ。
-
-| 項目 | 内容 |
-|------|------|
-| 動作環境 | Python 3.x / Streamlit / VOICEVOX エンジン（localhost:50021）/ Windows or Linux |
-| 音声生成 | VOICEVOX HTTP API（`/audio_query` → `/synthesis`）、話速スケール調整対応 |
-| 動画処理 | MoviePy（VideoFileClip・AudioFileClip・CompositeVideoClip） |
-| キャッシュ | 音声: SHA-256（テキスト + speaker_id + speed_scale）、シーン: 音声ハッシュ + 全パラメータ |
-| 並列処理 | `concurrent.futures` によるシーン単位の並列レンダリング |
-
-**実装パターン**
-
-| 機能 | 実装パターン | 技術選定理由 |
-|------|------------|------------|
-| 音声生成 | VOICEVOX REST API に `audio_query` → `synthesis` の2段階 POST | 無料・ローカル完結・日本語品質が高い。OpenAI TTS は有料かつ外部送信が発生するため非採用 |
-| フリガナ処理 | `*漢字*\|よみ` 記法を正規表現で音声用・表示用に分離 | 台本にルビを埋め込むだけで読み上げ精度を改善できる独自記法 |
-| キャッシュ戦略 | パラメータ全体の SHA-256 でファイル名を生成し `temp_uploads/` に保存 | シーン内容が変わっていなければ再レンダリング不要。パラメータ変更を自動検知 |
-| 並列レンダリング | `concurrent.futures.ThreadPoolExecutor` でシーン単位に並列化 | MoviePy の I/O バウンド処理は GIL の影響が小さくスレッド並列が有効 |
-
----
-
-### 7. トマト競技会 2025 — グリッパー開発（多国籍チーム）
+### 4. トマト競技会 2025 — グリッパー開発（多国籍チーム）
 **[`Tomato Competiton 2025 gripper/`](./Tomato%20Competiton%202025%20gripper)**
 
 30名規模の多国籍チームでトマト自動収穫ロボットを開発し、**テクニカルチャレンジ賞**を受賞（2025年12月）。
@@ -230,6 +164,89 @@ UN主催「Global Hackathon on AI for Digital Trade Regulatory Analysis」提出
 
 - **顎型グリッパーから FINRAY 構造へ刷新した理由**: 顎型は剛体把持のため形状ばらつきや位置ずれに弱く、果実の損傷リスクがあった。FINRAY の柔軟変形により把持の安定性と果実へのダメージ低減を両立する設計に切り替えた
 - **Autodesk Inventor を選択した理由**: 機械系部品（シャフト・ギア・モーターマウント）の拘束ベース設計に適しており、アセンブリ干渉チェックとパラメトリック変更を反復しやすい環境を構築できるため
+
+---
+
+### 5. UN Trade AI — RDTII Regulatory Analysis Demo
+**[`UN-AI-Hackathon-2026-main/`](./UN-AI-Hackathon-2026-main/UN-AI-Hackathon-2026-main)**
+
+UN主催「Global Hackathon on AI for Digital Trade Regulatory Analysis」提出作品。  
+各国の法令文書をAIで自動収集・解析し、UN基準（RDTII Pillar 6/7）へマッピングするRAGシステムのフロントエンド。
+
+| 項目 | 内容 |
+|------|------|
+| 動作環境 | Node.js 18.17以上 / npm 9以上 / ブラウザ（Chrome/Firefox/Safari） |
+| 対応言語 | 英語 / 日本語（URL: `/en/...` ↔ `/ja/...`） |
+| 対象データ | 5カ国（日本・タイ・ケニア・シンガポール・ブラジル）の法令文書 |
+| API設計 | FastAPI差し替えを想定した REST 設計（`BASE_URL` 環境変数で切替） |
+
+**実装パターン**
+
+| 画面 | 実装パターン |
+|------|------------|
+| ダッシュボード | `GET /api/stats` → StatsCard コンポーネントで KPI 表示 |
+| 法令検索 | クエリパラメータ（country / pillar / language / q）で JSON フィルタリング |
+| AI 監査ビュー | 引用スニペット左・元文書右の分割レイアウト、Approve/Flag ボタン |
+| Pillar マッピング | 国×Pillar の対応状況テーブル、CSV エクスポート |
+
+**技術選定理由**
+- **Next.js 14 App Router を採用した理由**: ハッカソンの短期間（数日）で i18n・API・UI を一気通貫で実装できる。Pages Router より Server Components による型安全な fetch が直感的
+- **shadcn/ui を採用した理由**: Radix UI ベースでアクセシビリティが保証済み。コンポーネントをソースコピーして管理するため、本番環境でのバンドルサイズ最適化が容易
+- **next-intl を採用した理由**: URL ベースのロケールルーティング（`/en/` `/ja/`）を middleware 1ファイルで実現でき、審査員が任意の言語でデモを確認できるようにした
+- **モックデータで FastAPI 差し替え対応設計にした理由**: ハッカソン期間中はバックエンドが未完成でも審査可能なデモを提供しつつ、実運用時の差し替えコストを最小化するため
+
+---
+
+### 6. 九州爬虫類フェス 2026 — 非公式ファンサイト
+**[`reptiles/`](./reptiles)**
+
+2026年5月30〜31日開催「九州爬虫類フェス 2026」の非公式ファンサイト。
+
+| 項目 | 内容 |
+|------|------|
+| 動作環境 | 任意のモダンブラウザ（ビルドツール不要、HTML単体で動作） |
+| データ規模 | 167店舗（エリアブース95 + テーブルブース72） |
+| 外部依存 | Google Fonts のみ（CDN 1リクエスト） |
+| ファイル構成 | 単一 HTML ファイル（HTML + CSS + JS を完全内包） |
+
+**実装パターン**
+
+| 機能 | 実装パターン | 数値 |
+|------|------------|------|
+| キーワード検索 | `Array.filter()` で `name / tags / desc` を横断検索 | 167件をタイプごとに即時絞り込み（ブロッキングなし） |
+| フィルター | エリア別・注目・地元・グッズの4軸を `AND` 条件で組み合わせ | 最大4条件の複合絞り込み |
+| モーダル | `display: none / block` 切替 + ESCキー・背景クリックで閉じる | ライブラリ0依存 |
+| スクロール連動ナビ | `window.scrollY` 監視でヘッダースタイルを動的切替 | スクロール閾値 50px |
+| アニメーション | CSS `@keyframes` のみ（フェードイン・シマー・スウェイ） | JS アニメーションなし |
+
+**技術選定理由**
+- **Vanilla JS / ゼロ依存を選択した理由**: イベント当日に現地でファイルを渡す想定のため、npm install や CDN 障害のリスクをゼロにする必要があった。単一 HTML ファイルでオフライン動作を保証
+- **フレームワーク（React/Vue 等）を使わなかった理由**: 167件のフィルタ・検索程度の処理は Vanilla JS の `Array.filter()` で十分高速。仮想 DOM のオーバーヘッドを避け、初期ロードを最小化
+- **データ収集に AI（Claude）を活用した理由**: 公式サイトの167店舗をスクレイピング → チラシ写真の OCR → SNS 検索という3段階を手動で行うと数十時間かかる作業を、AI ツール活用で大幅に短縮
+
+---
+
+### 7. Vlog Maker App
+**[`Vlogapp/`](./Vlogapp)**
+
+動画素材・テキスト台本を入力すると、自動でナレーション付きVlog動画を生成するStreamlitアプリ。
+
+| 項目 | 内容 |
+|------|------|
+| 動作環境 | Python 3.x / Streamlit / VOICEVOX エンジン（localhost:50021）/ Windows or Linux |
+| 音声生成 | VOICEVOX HTTP API（`/audio_query` → `/synthesis`）、話速スケール調整対応 |
+| 動画処理 | MoviePy（VideoFileClip・AudioFileClip・CompositeVideoClip） |
+| キャッシュ | 音声: SHA-256（テキスト + speaker_id + speed_scale）、シーン: 音声ハッシュ + 全パラメータ |
+| 並列処理 | `concurrent.futures` によるシーン単位の並列レンダリング |
+
+**実装パターン**
+
+| 機能 | 実装パターン | 技術選定理由 |
+|------|------------|------------|
+| 音声生成 | VOICEVOX REST API に `audio_query` → `synthesis` の2段階 POST | 無料・ローカル完結・日本語品質が高い。OpenAI TTS は有料かつ外部送信が発生するため非採用 |
+| フリガナ処理 | `*漢字*\|よみ` 記法を正規表現で音声用・表示用に分離 | 台本にルビを埋め込むだけで読み上げ精度を改善できる独自記法 |
+| キャッシュ戦略 | パラメータ全体の SHA-256 でファイル名を生成し `temp_uploads/` に保存 | シーン内容が変わっていなければ再レンダリング不要。パラメータ変更を自動検知 |
+| 並列レンダリング | `concurrent.futures.ThreadPoolExecutor` でシーン単位に並列化 | MoviePy の I/O バウンド処理は GIL の影響が小さくスレッド並列が有効 |
 
 ---
 
