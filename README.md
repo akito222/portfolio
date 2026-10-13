@@ -38,6 +38,18 @@ kawabata.akito768@mail.kyutech.jp
 
 **処理パイプライン（7フェーズ）**
 
+```mermaid
+flowchart LR
+    A["A. フレーム取得<br/>RGB-D アライメント<br/>~4.6%"]
+    B["B. YOLO-seg 推論<br/>~74%<br/>⚠ ボトルネック"]
+    C["C. 3D 重心推定<br/>中央値で外れ値除去<br/>~11%"]
+    D["D. 深度ソート<br/>Z 値昇順<br/>~0.01%"]
+    E["E. 組み合わせ探索<br/>最大 C(8,4)=70 通り<br/>~3.2%"]
+    F["F. オーバーレイ描画<br/>OpenCV<br/>~6.4%"]
+    A --> B --> C --> D --> E --> F
+    style B fill:#e5484d,stroke:#b42318,color:#fff,stroke-width:3px
+```
+
 | フェーズ | 処理内容 | 処理時間比率 |
 |----------|---------|------------|
 | A | フレーム取得 + RGB-D アライメント | ~4.6% |
@@ -82,6 +94,22 @@ kawabata.akito768@mail.kyutech.jp
 
 **アプローチの二層構成**
 
+```mermaid
+flowchart TB
+    CAM["RGB-D カメラ"] --> REC["認識<br/>YOLOv8-seg"]
+    REC --> PLACE & COOP & GRASP
+
+    subgraph L1["確定動作（古典計画）"]
+        PLACE["配置<br/>MoveIt2 + OMPL/RRTConnect"]
+    end
+    subgraph L2["創発動作（強化学習 / Isaac Sim）"]
+        COOP["双腕協調<br/>MAPPO（CTDE）"]
+        GRASP["把持の局所制御<br/>PPO（単腕）"]
+    end
+
+    PLACE & COOP & GRASP --> ROBOT["Yaskawa Motoman SIA5<br/>双腕 7 軸 × 2"]
+```
+
 | レイヤ        | 手法                          | 技術選定理由                                                        |
 | ---------- | --------------------------- | ------------------------------------------------------------- |
 | 配置（確定動作）   | MoveIt2 + OMPL/RRTConnect   | RL の試行錯誤を経て、静的な配置は古典経路計画の方が安定・再現性が高いと判断（Option B） |
@@ -89,6 +117,17 @@ kawabata.akito768@mail.kyutech.jp
 | 把持局所制御     | PPO（単腕）                     | Phase 2 双腕 MAPPO の土台。単腕を古典手法で解くと双腕協調に繋がらないため RL で構築  |
 
 **数値成果（強化学習）**
+
+```mermaid
+flowchart LR
+    P0["Phase 0<br/>学習機構の検証<br/>双腕・同じ役割 ≈930ep<br/>平均報酬 −6.1 → 47.6"]
+    P1["Phase 1<br/>単腕把持<br/>PPO で唐揚げを把持<br/>把持成功率 100%（v7）"]
+    P2["Phase 2<br/>双腕協調<br/>MAPPO<br/>左腕=パスタ / 右腕=唐揚げ"]
+    P0 --> P1 --> P2
+    style P0 fill:#d1fadf,stroke:#039855
+    style P1 fill:#d1fadf,stroke:#039855
+    style P2 fill:#fef0c7,stroke:#dc6803,stroke-dasharray:5 5
+```
 
 | フェーズ            | 内容                          | 結果                                       |
 | --------------- | --------------------------- | ---------------------------------------- |
@@ -116,6 +155,23 @@ kawabata.akito768@mail.kyutech.jp
 | ロボット | Yamaha YK400XE（4軸 SCARA、最大可搬重量 4kg） |
 | 通信方式 | Ethernet（TCP/IP）経由で RCX340 にオンラインコマンド送信 |
 | 制御モード | 関節値制御（J1/J2/J4: 度、J3: mm）・標準座標制御（x,y,z,θ） |
+
+**通信構成**
+
+```mermaid
+flowchart LR
+    subgraph PC["PC（Ubuntu 22.04 / ROS2 Humble）"]
+        LAUNCH["Launch ファイル<br/>一括起動"]
+        GUI["GUI（tkinter）<br/>関節値 / 標準座標"]
+        SRV["ROS2 Service<br/>/set_vacuum"]
+        RVIZ["Rviz<br/>軌跡の可視化"]
+        LAUNCH -.-> GUI
+        GUI --> SRV
+    end
+    PC -- "Ethernet（TCP/IP）<br/>オンラインコマンド" --> CTRL["Yamaha RCX340<br/>コントローラ"]
+    CTRL --> ROBOT["Yamaha YK400XE<br/>4 軸 SCARA"]
+    ROBOT --> VAC["真空ピック"]
+```
 
 **実装済み機能**
 
