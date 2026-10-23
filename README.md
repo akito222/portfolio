@@ -223,8 +223,26 @@ flowchart LR
 
 ---
 
+#### データ活用の学習の流れ（5 → 6 → 7）
+
+UN ハッカソンで知らない技術に触れたことをきっかけに、データ活用の各工程を自分の手で確かめていった。
+
+```mermaid
+flowchart LR
+    UN["5. UN ハッカソン<br/>知らない技術に触れる<br/>（収集・解析・RAG）"]
+    REP["6. 爬虫類フェス<br/>ファンサイト<br/>データ収集"]
+    AWS["7. AWS 分析基盤<br/>蓄積・加工・分析・可視化"]
+    UN -- "きっかけ" --> REP
+    UN -- "きっかけ" --> AWS
+    REP -- "次の工程へ" --> AWS
+```
+
+---
+
 ### 5. UN Trade AI — RDTII Regulatory Analysis Demo
 **[`UN-AI-Hackathon-2026-main/`](./UN-AI-Hackathon-2026-main/UN-AI-Hackathon-2026-main)**
+
+> **位置づけ（データ活用の学習 ①きっかけ）**: このハッカソンで、法令文書の自動収集・解析・RAG など自分の知らない技術に触れた。ここで知った「データを集めて、蓄え、分析して見せる」流れを、次の 2 つのプロジェクトで自分の手で一つずつ確かめた。
 
 UN主催「Global Hackathon on AI for Digital Trade Regulatory Analysis」提出作品。  
 各国の法令文書をAIで自動収集・解析し、UN基準（RDTII Pillar 6/7）へマッピングするRAGシステムのフロントエンド。
@@ -256,6 +274,8 @@ UN主催「Global Hackathon on AI for Digital Trade Regulatory Analysis」提出
 ### 6. 九州爬虫類フェス 2026 — 非公式ファンサイト
 **[`reptiles/`](./reptiles)**
 
+> **位置づけ（データ活用の学習 ②データ収集）**: UN ハッカソンで知った流れのうち、**データ収集**を実践したプロジェクト。公式サイト・チラシ写真・SNS から 167 店舗分の情報を集めて構造化した。
+
 2026年5月30〜31日開催「九州爬虫類フェス 2026」の非公式ファンサイト。
 
 | 項目 | 内容 |
@@ -282,7 +302,58 @@ UN主催「Global Hackathon on AI for Digital Trade Regulatory Analysis」提出
 
 ---
 
-### 7. Vlog Maker App
+### 7. AWS Review Analytics Pipeline — データ分析基盤の IaC 化
+**[`akito222/aws-review-analytics-pipeline`](https://github.com/akito222/aws-review-analytics-pipeline)**
+
+> **位置づけ（データ活用の学習 ③蓄積・加工・分析・可視化）**: UN ハッカソンで知った流れのうち、**データの蓄積・加工・分析・可視化**を、AWS 上で一度自分の手でできるかを確かめたプロジェクト。
+
+Amazon のレビューデータ（170,296 件）を題材に、AWS 上で **収集・蓄積 → カタログ化 → 加工 → 分析（SQL / 生成AI）→ 可視化** までのデータ分析基盤を構築。
+マネジメントコンソールで手作業で組んだ構成を **すべて CloudFormation とコードに起こし直し**、DuckDB でローカル再現して実データで結果を検証した。
+
+| 項目 | 内容 |
+|------|------|
+| 対象データ | Amazon レビュー CSV（170,296 行 / 148.7 MB）＋ 追加データ（149,656 行） |
+| AWS サービス | S3 / Glue（Data Catalog・Crawler・ETL・Workflow・DataBrew）/ Athena / Bedrock（Nova Lite）/ Quick / EventBridge / IAM |
+| IaC | CloudFormation 4 スタック（データレイク → DataBrew レシピ → 処理ジョブ → 自動化） |
+| 言語・ツール | Python（PySpark・boto3・pandas・DuckDB）/ SQL / GitHub Actions |
+| 品質 | cfn-lint・ruff・pytest（22 件）を CI で実行 |
+
+**アーキテクチャ**
+
+```mermaid
+flowchart LR
+  CSV[レビューCSV] --> RAW[(S3 raw/)]
+  RAW -- Crawler --> CAT[(Glue Data Catalog)]
+  RAW -- "DataBrew<br/>レシピ ×2データ" --> CUR[(S3 curated/)]
+  CAT -- "Glue ETL<br/>Parquet + partition" --> CUR
+  RAW -- "Bedrock<br/>要約・感情・ギャップ" --> AI[(S3 ai/)]
+  CUR & AI -- Crawler --> CAT
+  CAT --> ATH[Athena] --> QS[Quick]
+  RAW -. "Object Created" .-> EB[EventBridge] -.-> WF[Glue Workflow] -.-> CAT
+  CRON[cron] -.-> WF
+```
+
+**数値成果（CSV → Parquet + パーティションによるスキャン量削減）**
+
+| 読む対象 | サイズ | CSV 比 |
+|----------|--------|--------|
+| CSV（行指向・パーティションなし） | 148.7 MB | 100% |
+| Parquet 全パーティション・全列 | 75.3 MB | 50.66% |
+| Parquet Books パーティションのみ | 5.0 MB | 3.37% |
+| **Parquet Books のみ・必要な 2 列だけ** | **196.4 KB** | **0.13%** |
+
+> **Athena はスキャン量で課金されるため、同じ SQL のクエリコストを約 1/770 に削減（結果は 2,218 行で完全一致）**
+
+**技術選定理由**
+- **Parquet + パーティションを採用した理由**: Athena はスキャンしたバイト数で課金される。列指向・Snappy 圧縮・`product_category` でのパーティション分割により、参照しない列やフォルダを読まない構成にした。カテゴリは 30 種類で、パーティションキーとして値の種類が多すぎない
+- **カスタム分類子を付けた理由**: カンマを含むためクォートで囲まれた行が 14 件あり、Crawler 既定の `LazySimpleSerDe` ではその行だけ列がずれた。`QuoteSymbol` を指定して `OpenCSVSerDe` が使われるようにした
+- **スタックを 4 つに分けた理由**: 依存順と変更頻度が異なる（バケットはほぼ不変、ジョブは頻繁に変わる）。`Export / ImportValue` で疎結合にし、上位スタックだけ作り直せるようにした
+- **Bedrock 分析をノートブックからジョブに作り直した理由**: ノートブックは定期実行や他処理との連結ができず、停止忘れで課金が続く。Converse API でモデルを ID だけで切り替え可能にし、`temperature=0` で再現性を確保。データの 57% が★5 のため、★評価ごとの層化サンプリングで「★と本文の感情のギャップ」を検出できるようにした
+- **IAM を用途ごとに分けた理由**: Crawler/ETL・DataBrew・Bedrock ジョブ・EventBridge でロールを分け、それぞれ必要な操作だけを許可する最小権限にした
+
+---
+
+### 8. Vlog Maker App
 **[`Vlogapp/`](./Vlogapp)**
 
 動画素材・テキスト台本を入力すると、自動でナレーション付きVlog動画を生成するStreamlitアプリ。
