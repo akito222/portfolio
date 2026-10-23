@@ -16,9 +16,10 @@ kawabata.akito768@mail.kyutech.jp
 | 👁️ 画像認識 | YOLOv8-seg + RGB-D による食材認識・3D 重心推定 | 11.2 → 31.8 FPS（約 2.85 倍）に高速化 |
 | ⚙️ ロボット制御 | ROS2 / MoveIt2 による SCARA・双腕ロボットの制御と経路計画 | 研究室の SCARA 制御パッケージを開発・保守 |
 | 👥 チーム開発 | 30 名の多国籍チームでトマト収穫ロボットを開発 | トマト競技会 2025 テクニカルチャレンジ賞（2026 年はリーダー） |
+| ☁️ クラウド / データ基盤 | AWS（S3・Glue・Athena・Bedrock）で収集〜可視化の分析基盤を CloudFormation で構築 | Athena のスキャン量を 0.13%（約 1/770）に削減 |
 | 🌐 Web / アプリ | Next.js・Vanilla JS・Streamlit で短期間の開発 | UN 主催 AI ハッカソンに RAG デモを提出 |
 
-**主な技術**: Python / C++ / ROS2 / MoveIt2 / Isaac Sim / YOLO / OpenCV / 強化学習（MAPPO・PPO） / Autodesk Inventor / TypeScript
+**主な技術**: Python / C++ / ROS2 / MoveIt2 / Isaac Sim / YOLO / OpenCV / 強化学習（MAPPO・PPO） / AWS / SQL / Autodesk Inventor / TypeScript
 
 ---
 
@@ -395,6 +396,8 @@ flowchart LR
 | MoveIt2 / 経路計画      | 〜1年   | 初中級 | SIA5 の Pick&Place を OMPL/RRTConnect で計画、C++ ノード実装 |
 | C / C++            | —     | 初級  | MoveIt2 の経路計画ノード（軌道 CSV 出力）を C++ で実装             |
 | データセット設計・評価         | 〜1年   | 初中級 | データリーク検出→grouped split 再分割、seed 固定 ablation 実施   |
+| AWS（S3 / Glue / Athena / Bedrock） | — | 初級 | 分析基盤を CloudFormation 4 スタックで IaC 化、Parquet 化で Athena のスキャン量を 0.13% に削減 |
+| SQL | — | 初級 | Athena で集計・結合・HAVING・information_schema、少数サンプルの偏りを読んで改善 |
 
 ---
 
@@ -554,6 +557,19 @@ flowchart LR
 | 再分割         | 動画単位の grouped split に変更（リーク 0）                   |
 | ベースライン      | yolov8n / imgsz960 で test mAP50 **0.993** / mAP50-95 **0.889** |
 | 評価方針        | seed 固定・1変更ずつ ablation で最良設定を探索（推論 2.3ms/枚）     |
+
+---
+
+### ☁️ AWS `経験 —`
+
+**レベル**: 初級 ／ **動作環境**: 東京リージョン / AWS CLI v2 / CloudFormation
+
+| 実装 | 内容 | 補足 |
+|------|------|------|
+| Athena ワークグループ | 結果の保存先と暗号化を強制、`BytesScannedCutoffPerQuery`（1 GiB）で誤った全件スキャンを停止 | 結果ファイルは S3 ライフサイクルで 30 日後に自動削除 |
+| Glue ETL ジョブブックマーク | 処理済みの S3 オブジェクトをスキップ | ファイル到着ごとの実行でも全件を再変換しない |
+| 自動化 | cron の定期実行と、S3 へのファイル到着（EventBridge → Glue Workflow）の 2 系統 | 定期実行は既定で無効にして課金を防止 |
+| ローカル再現 | DuckDB + pandas で同じ SQL・レシピを実行し、AWS なしで結果を検証 | pytest 22 件を GitHub Actions で実行 |
 
 ---
 
