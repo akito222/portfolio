@@ -1,0 +1,4 @@
+# テストと Day2 / Day5 の実験に必要な最小構成（PyTorch は CI では CPU 版を別途インストール）
+numpy
+matplotlib
+pytest

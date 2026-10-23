@@ -185,30 +185,35 @@ class TinyGPT(nn.Module):
 # -----------------------------------------------------------------
 # 3. 事前学習ループ（Day3: 「自己教師あり学習で次の単語を予測」を実際にやる）
 # -----------------------------------------------------------------
-model = TinyGPT(vocab_size).to(device)
-print(f"パラメータ数: {sum(p.numel() for p in model.parameters()):,}")
+def main():
+    model = TinyGPT(vocab_size).to(device)
+    print(f"パラメータ数: {sum(p.numel() for p in model.parameters()):,}")
 
-optimizer = torch.optim.AdamW(model.parameters(), lr=3e-3)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=3e-3)
 
-for step in range(500):
-    xb, yb = get_batch("train")
-    logits, loss = model(xb, yb)
-    optimizer.zero_grad(set_to_none=True)
-    loss.backward()
-    optimizer.step()
+    for step in range(500):
+        xb, yb = get_batch("train")
+        logits, loss = model(xb, yb)
+        optimizer.zero_grad(set_to_none=True)
+        loss.backward()
+        optimizer.step()
 
-    if step % 100 == 0:
-        model.eval()
-        with torch.no_grad():
-            xv, yv = get_batch("val")
-            _, val_loss = model(xv, yv)
-        model.train()
-        print(f"step {step:4d} | train loss {loss.item():.3f} | val loss {val_loss.item():.3f}")
+        if step % 100 == 0:
+            model.eval()
+            with torch.no_grad():
+                xv, yv = get_batch("val")
+                _, val_loss = model(xv, yv)
+            model.train()
+            print(f"step {step:4d} | train loss {loss.item():.3f} | val loss {val_loss.item():.3f}")
 
-# -----------------------------------------------------------------
-# 4. 生成してみる（学習した「次の単語予測」を使って文章を作る）
-# -----------------------------------------------------------------
-context = torch.zeros((1, 1), dtype=torch.long, device=device)  # 空文字から生成開始
-generated = model.generate(context, max_new_tokens=200)
-print("\n--- 生成結果 ---")
-print(decode(generated[0].tolist()))
+    # -----------------------------------------------------------------
+    # 4. 生成してみる（学習した「次の単語予測」を使って文章を作る）
+    # -----------------------------------------------------------------
+    context = torch.zeros((1, 1), dtype=torch.long, device=device)  # 空文字から生成開始
+    generated = model.generate(context, max_new_tokens=200)
+    print("\n--- 生成結果 ---")
+    print(decode(generated[0].tolist()))
+
+
+if __name__ == "__main__":
+    main()

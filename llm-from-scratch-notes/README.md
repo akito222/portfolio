@@ -16,10 +16,10 @@
 | 回 | テーマ | 主なトピック | 本リポジトリ |
 |----|--------|-------------|-------------|
 | 1 | 講座概要 | 生成確率としての言語モデル、自己回帰、Transformer、スケール則、基盤モデル、ロボット応用（RT-1, π0） | — |
-| 2 | 推論 | Zero/Few-shot、CoT、Self-Consistency、Self-Refine、デコーディング（Greedy / Top-k / Top-p / Temperature）、LLM-as-a-Judge | 未実装 |
+| 2 | 推論 | Zero/Few-shot、CoT、Self-Consistency、Self-Refine、デコーディング（Greedy / Top-k / Top-p / Temperature）、LLM-as-a-Judge | [day2/](day2) |
 | 3 | 事前学習 | Attention（Q/K/V）、Causal Mask、Multi-Head、FFN、LayerNorm、次トークン予測 | [day3/](day3) |
 | 4 | スケール則 | L(N, D, C) のべき乗則、FLOPs ≈ 6ND、Chinchilla（D ≈ 20N）、μP、推論時スケーリング | [day4/](day4) |
-| 5 | 事前学習（上級） | Sparse Attention、FlashAttention、MoE、量子化（LLM.int8()）、分散学習 | 未実装 |
+| 5 | 事前学習（上級） | Sparse Attention、FlashAttention、MoE、量子化（LLM.int8()）、分散学習 | [day5/](day5) |
 | 6 | ファインチューニング | Instruction Tuning、SFT、PEFT（LoRA / Adapter / Prompt Tuning / BitFit） | [day6/](day6) |
 | 7 | 強化学習 | RLHF（報酬モデル＋PPO）、DPO、RLVR、GRPO、DAPO、Dr. GRPO | [day7/](day7) |
 | 8 | データと評価 | 前処理（URL フィルタ・言語判定・MinHash 重複除去）、Self-Instruct、ベンチマーク、LLM-as-a-Judge、Chatbot Arena | [day8/](day8) |
@@ -44,8 +44,10 @@
 
 | テーマ | 基礎編 | 深掘り編 |
 |--------|--------|----------|
+| **デコーディング / Self-Consistency** | [day2/sampling.py](day2/sampling.py) | [day2/experiment.py](day2/experiment.py) |
 | **Transformer** | [day3/day3_transformer.py](day3/day3_transformer.py) | [day3/day3_transformer_deepdive.py](day3/day3_transformer_deepdive.py) |
 | **スケール則** | [day4/day4_scaling_law.py](day4/day4_scaling_law.py) | [day4/day4_chinchilla_deepdive.py](day4/day4_chinchilla_deepdive.py) |
+| **MoE / 量子化 / Attention の計算量** | [day5/moe.py](day5/moe.py) ほか | [day5/experiment.py](day5/experiment.py) |
 | **ファインチューニング (SFT/LoRA)** | [day6/day6_sft_lora.py](day6/day6_sft_lora.py) | [day6/day6_lora_deepdive.py](day6/day6_lora_deepdive.py) |
 | **強化学習 (RLHF/DPO/GRPO)** | [day7/day7_dpo.py](day7/day7_dpo.py) | [day7/day7_rl_deepdive.py](day7/day7_rl_deepdive.py) |
 | **データ整備と評価** | [day8/day8_data_and_eval.py](day8/day8_data_and_eval.py) | [day8/day8_data_eval_deepdive.py](day8/day8_data_eval_deepdive.py) |
@@ -122,6 +124,27 @@ python day3/day3_transformer.py   # 例: Transformer を学習・生成
 > **注:** RTX 50 シリーズ（Blackwell, sm_120）は一般的な cu121 版 PyTorch では
 > 非対応の警告が出て GPU を使えません。**cu128 以降**の指定が必要です（setup.sh に反映済み）。
 > この環境依存のハマりどころを自力で解決した経緯も、学びの一部として記録しています。
+
+---
+
+## テストと CI
+
+```bash
+pip install -r requirements-test.txt   # PyTorch は別途インストール
+pytest -q
+```
+
+[`tests/`](tests) に、実装した部品が数式どおりに動くかを確かめる単体テストを置いています。
+（例: softmax の和が 1 になる、Causal Mask が未来のトークンを見ていない、タイル化 Attention が naive と一致する、
+LoRA のゼロ初期化で出力が変わらない、DPO 損失が方策 = 参照モデルのとき log 2 になる、など）
+
+プッシュのたびに GitHub Actions（[ワークフロー](../.github/workflows/llm-from-scratch-notes.yml)）で
+テストと Day2 / Day5 の実験スクリプトを CPU で実行しています。
+
+![ci](https://github.com/akito222/portfolio/actions/workflows/llm-from-scratch-notes.yml/badge.svg)
+
+> Day6 / Day7 / Day8 のテストは、スクリプト本体と同じ式を関数として切り出した
+> [`day6/lora.py`](day6/lora.py)・[`day7/rl_objectives.py`](day7/rl_objectives.py)・[`day8/minhash.py`](day8/minhash.py) を対象にしています。
 
 ---
 

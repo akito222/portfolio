@@ -234,9 +234,10 @@ flowchart LR
 | 項目 | 内容 |
 |------|------|
 | 講座 | 東京大学 松尾・岩澤研究室 大規模言語モデル講座（全8回） |
-| 実装範囲 | Transformer / スケール則 / SFT・LoRA / RLHF・DPO・GRPO / データ整備と評価（第3・4・6・7・8回） |
+| 実装範囲 | デコーディング・Self-Consistency / Transformer / スケール則 / MoE・量子化・Attention 計算量 / SFT・LoRA / RLHF・DPO・GRPO / データ整備と評価（第2〜8回） |
 | 実装方針 | ライブラリのブラックボックスに頼らず、各テーマを「基礎編（動かす）」と「深掘り編（なぜを検証）」の 2 本立てで実装 |
 | 動作環境 | Ubuntu 22.04 / RTX 5060 Laptop（Blackwell）/ PyTorch 2.11.0+cu128 |
+| 品質 | pytest による単体テスト（Causal Mask が未来を見ない、タイル化 Attention が naive と一致 など）を GitHub Actions で実行 |
 | 最終課題 | 小規模 LLM に QLoRA → DPO を適用し、LLM-as-a-Judge の安全性スコアを **Base < QLoRA < DPO** の順に改善 |
 
 **LLM 開発パイプラインと実装の対応**
