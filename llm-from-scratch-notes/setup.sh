@@ -1,5 +1,5 @@
 #!/bin/bash
-# 松尾研LLM講座2025 演習ワークスペース セットアップスクリプト
+# llm-from-scratch-notes セットアップスクリプト
 # 使い方: bash setup.sh
 set -e
 

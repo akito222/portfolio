@@ -224,15 +224,60 @@ flowchart LR
 
 ---
 
-#### データ活用の学習の流れ（5 → 6 → 7）
+### 5. LLM をゼロから実装して理解する — 松尾・岩澤研 大規模言語モデル講座
+**[`llm-from-scratch-notes/`](./llm-from-scratch-notes)**
+
+東京大学 松尾・岩澤研究室「大規模言語モデル講座（全8回）」で学んだ内容を、**PyTorch でゼロから再実装**し、数式の「なぜ」を数値実験で確かめた学習記録。
+本リポジトリは受講内容をもとに独自に再実装したもので、講座の配布物（スライド・ノートブック・データ・宿題の解答）は含まない。
+
+| 項目 | 内容 |
+|------|------|
+| 講座 | 東京大学 松尾・岩澤研究室 大規模言語モデル講座（全8回） |
+| 実装範囲 | Transformer / スケール則 / SFT・LoRA / RLHF・DPO・GRPO / データ整備と評価（第3・4・6・7・8回） |
+| 実装方針 | ライブラリのブラックボックスに頼らず、各テーマを「基礎編（動かす）」と「深掘り編（なぜを検証）」の 2 本立てで実装 |
+| 動作環境 | Ubuntu 22.04 / RTX 5060 Laptop（Blackwell）/ PyTorch 2.11.0+cu128 |
+| 最終課題 | 小規模 LLM に QLoRA → DPO を適用し、LLM-as-a-Judge の安全性スコアを **Base < QLoRA < DPO** の順に改善 |
+
+**LLM 開発パイプラインと実装の対応**
+
+```mermaid
+flowchart LR
+    DATA["データ<br/>MinHash 重複除去<br/>汚染検出（第8回）"]
+    PRE["事前学習<br/>ミニ GPT を自作<br/>（第3回）"]
+    SCALE["スケール則<br/>べき乗則・Chinchilla<br/>（第4回）"]
+    SFT["SFT / LoRA<br/>（第6回）"]
+    RL["RLHF / DPO / GRPO<br/>（第7回）"]
+    EVAL["評価<br/>Perplexity ほか<br/>（第8回）"]
+    DATA --> PRE --> SFT --> RL --> EVAL
+    SCALE -. "モデルとデータの配分" .-> PRE
+```
+
+**数値で確かめたこと**
+
+| テーマ | 検証内容 | 結果 |
+|--------|---------|------|
+| Attention | `√d_k` で割る理由 | 内積の分散が d_k に比例（d_k=64 で分散 64.2）、割ると ≈1 に正規化 |
+| スケール則 | 計算量 C ≈ 6ND の下での N/D 配分 | GPT-3（D/N=1.7）がデータ不足側にあることを再現 |
+| LoRA | Full-FT とのパラメータ数比較 | **7.11%** の更新で同じ質問応答精度。ΔW をマージ後の出力誤差 1.2e-6（推論オーバーヘッドなし） |
+| MinHash | 最小ハッシュの一致確率 = Jaccard 係数 | 1 万回試行で誤差 0.004 |
+| データ汚染 | テスト問題を学習データに混入 | 正解率が 0.02% → 99% に跳ね上がることを実証 |
+
+**技術選定理由**
+- **ライブラリを使わずゼロから実装した理由**: 講義で数式として学んだ内容を「読んで分かった気になる」で終わらせず、部品レベルで説明できる状態にするため
+- **深掘り編で論文の主張を再検証した理由**: Chinchilla 則・LoRA・DPO などの主張を鵜呑みにせず、手元の小さな実験で同じ傾向が出るかを確かめるため
+- **フィジカル AI との接点**: 講座でも扱われたロボット基盤モデル（RT-1, π0）は Transformer を中核に持つ。修士研究で扱う VLA を理解・改良するための土台として学んだ
+
+---
+
+#### データ活用の学習の流れ（6 → 7 → 8）
 
 UN ハッカソンで知らない技術に触れたことをきっかけに、データ活用の各工程を自分の手で確かめていった。
 
 ```mermaid
 flowchart LR
-    UN["5. UN ハッカソン<br/>知らない技術に触れる<br/>（収集・解析・RAG）"]
-    REP["6. 爬虫類フェス<br/>ファンサイト<br/>データ収集"]
-    AWS["7. AWS 分析基盤<br/>蓄積・加工・分析・可視化"]
+    UN["6. UN ハッカソン<br/>知らない技術に触れる<br/>（収集・解析・RAG）"]
+    REP["7. 爬虫類フェス<br/>ファンサイト<br/>データ収集"]
+    AWS["8. AWS 分析基盤<br/>蓄積・加工・分析・可視化"]
     UN -- "きっかけ" --> REP
     UN -- "きっかけ" --> AWS
     REP -- "次の工程へ" --> AWS
@@ -240,7 +285,7 @@ flowchart LR
 
 ---
 
-### 5. UN Trade AI — RDTII Regulatory Analysis Demo
+### 6. UN Trade AI — RDTII Regulatory Analysis Demo
 **[`UN-AI-Hackathon-2026-main/`](./UN-AI-Hackathon-2026-main/UN-AI-Hackathon-2026-main)**
 
 > **位置づけ（データ活用の学習 ①きっかけ）**: このハッカソンで、法令文書の自動収集・解析・RAG など自分の知らない技術に触れた。ここで知った「データを集めて、蓄え、分析して見せる」流れを、次の 2 つのプロジェクトで自分の手で一つずつ確かめた。
@@ -272,7 +317,7 @@ UN主催「Global Hackathon on AI for Digital Trade Regulatory Analysis」提出
 
 ---
 
-### 6. 九州爬虫類フェス 2026 — 非公式ファンサイト
+### 7. 九州爬虫類フェス 2026 — 非公式ファンサイト
 **[`reptiles/`](./reptiles)**
 
 > **位置づけ（データ活用の学習 ②データ収集）**: UN ハッカソンで知った流れのうち、**データ収集**を実践したプロジェクト。公式サイト・チラシ写真・SNS から 167 店舗分の情報を集めて構造化した。
@@ -303,7 +348,7 @@ UN主催「Global Hackathon on AI for Digital Trade Regulatory Analysis」提出
 
 ---
 
-### 7. AWS Review Analytics Pipeline — データ分析基盤の IaC 化
+### 8. AWS Review Analytics Pipeline — データ分析基盤の IaC 化
 **[`aws-review-analytics-pipeline/`](./aws-review-analytics-pipeline)**（元リポジトリ: [akito222/aws-review-analytics-pipeline](https://github.com/akito222/aws-review-analytics-pipeline)）
 
 > **位置づけ（データ活用の学習 ③蓄積・加工・分析・可視化）**: UN ハッカソンで知った流れのうち、**データの蓄積・加工・分析・可視化**を、AWS 上で一度自分の手でできるかを確かめたプロジェクト。
@@ -354,7 +399,7 @@ flowchart LR
 
 ---
 
-### 8. Vlog Maker App
+### 9. Vlog Maker App
 **[`Vlogapp/`](./Vlogapp)**
 
 動画素材・テキスト台本を入力すると、自動でナレーション付きVlog動画を生成するStreamlitアプリ。

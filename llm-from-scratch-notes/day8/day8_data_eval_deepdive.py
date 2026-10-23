@@ -4,7 +4,7 @@ Day8 深掘り: データ整備と評価の数理を完全理解する
 【4つの実験】
  実験1: MinHashの原理を実験で証明する
         「最小ハッシュの一致確率 = Jaccard係数」をモンテカルロで確認
- 実験2: 講義スライドの例（"I have a pen" vs "I have an orange"）を再現
+ 実験2: 自作の短い2文で Jaccard を手計算と照合
  実験3: n-gram overlap によるデータ汚染の検出（実務手法）
  実験4: 評価指標の使い分け ― Perplexityが測れないものを理解する
 
@@ -89,13 +89,13 @@ for k in [1, 10, 100, 1000]:
 print("→ kを増やすほど推定が安定（ばらつきが小さくなる）\n")
 
 # =================================================================
-# 実験2: 講義スライドの例を再現
+# 実験2: 自作の短い2文で Jaccard を手計算と照合
 # =================================================================
 print("="*62)
-print("実験2: 講義スライドの例を再現")
+print("実験2: 自作の短い2文で Jaccard を手計算と照合")
 print("="*62)
-sent_a = "I have a pen"
-sent_b = "I have an orange"
+sent_a = "the robot picks a karaage"
+sent_b = "the robot places a karaage"
 set_a = word_ngrams(sent_a, 1)
 set_b = word_ngrams(sent_b, 1)
 print(f'A文章: "{sent_a}" → {set_a}')
@@ -103,7 +103,7 @@ print(f'B文章: "{sent_b}" → {set_b}')
 print(f"共通部分 A∩B = {set_a & set_b}")
 print(f"和集合   A∪B = {set_a | set_b}")
 print(f"Jaccard = |A∩B|/|A∪B| = {len(set_a & set_b)}/{len(set_a | set_b)} = {jaccard(set_a, set_b):.3f}")
-print("→ 講義スライドの通り 2/6 = 1/3 ≈ 0.333\n")
+print("→ 手計算どおり 4/6 = 2/3 ≈ 0.667\n")
 
 # =================================================================
 # 実験3: n-gram overlap によるデータ汚染の検出（実務手法）

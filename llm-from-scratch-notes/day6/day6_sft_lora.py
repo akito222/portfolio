@@ -1,7 +1,7 @@
 """
 Day6: Instruction Tuning (SFT) と PEFT (LoRA) を自前実装
 =================================================================
-講座Day6の目標：
+このスクリプトの目標：
  ・Instruction Tuning が事前学習と何が違うか説明できる
  ・PEFT (LoRA) がなぜ効率的か説明できる
  ・SFTとLoRAをコードで実装できる
@@ -99,9 +99,9 @@ class LoRALinear(nn.Module):
         self.base = nn.Linear(in_features, out_features, bias=bias)
         self.r = r
         self.scaling = alpha / r
-        # A: d_in × r,  B: r × d_out  （講義スライドの表記通り）
+        # A: d_in × r,  B: r × d_out  （Hu+ 2021 LoRA 論文の表記）
         self.lora_A = nn.Parameter(torch.randn(in_features, r) * 0.01)
-        self.lora_B = nn.Parameter(torch.zeros(r, out_features))  # Bはゼロ初期化(講義資料の通り)
+        self.lora_B = nn.Parameter(torch.zeros(r, out_features))  # Bはゼロ初期化（LoRA 論文と同じ。学習開始時に ΔW=0）
         self.lora_enabled = False
 
     def freeze_base(self):
@@ -332,4 +332,4 @@ print("\n=== Full-FT vs LoRA 比較まとめ ===")
 print(f"Full-FT 学習対象パラメータ: {count_trainable(model_fullft):,} (100%)")
 print(f"LoRA    学習対象パラメータ: {n_trainable:,} ({100*n_trainable/n_total:.2f}%)")
 print("→ ずっと少ないパラメータ更新でも、質問応答ができるようになっていれば")
-print("  「PEFT/LoRAは効率よく振る舞いを変えられる」という講義の主張を体感できたことになります")
+print("  「PEFT/LoRAは効率よく振る舞いを変えられる」という LoRA 論文の主張を手元で確かめられたことになります")

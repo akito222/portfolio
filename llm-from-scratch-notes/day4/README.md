@@ -55,7 +55,7 @@ python day4/day4_chinchilla_deepdive.py
 ```text
 GPT-3: N=175B, D=300B トークン
   推定計算量 C = 6ND = 3.15e+23 FLOPs
-  （講義資料の GPT-3 実測値 3.14e23 FLOPs とほぼ一致）
+  （GPT-3 論文 Brown+ 2020 で報告された 3.14e23 FLOPs とほぼ一致）
 ```
 
 ### 実験3: GPT-3 は本当に「大きすぎた」のか

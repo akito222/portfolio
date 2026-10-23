@@ -54,7 +54,7 @@ D_gpt3 = 300e9
 C_gpt3 = compute_flops(N_gpt3, D_gpt3)
 print(f"GPT-3: N=175B, D=300B トークン")
 print(f"  推定計算量 C = 6ND = {C_gpt3:.2e} FLOPs")
-print(f"  （講義資料の GPT-3 実測値 3.14e23 FLOPs とほぼ一致）\n")
+print(f"  （GPT-3 論文 Brown+ 2020 で報告された 3.14e23 FLOPs とほぼ一致）\n")
 
 # =================================================================
 # 実験2: IsoFLOP ― 計算予算を固定してN,Dの最適配分を探す

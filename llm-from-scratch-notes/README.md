@@ -3,9 +3,28 @@
 > 大規模言語モデル（LLM）の中核技術を、既存ライブラリに頼らず **PyTorch で最小実装** し、
 > 各技術が「なぜそう設計されているのか」を **自分の手で実験して確かめた** 学習記録です。
 
-東京大学 松尾・岩澤研究室「大規模言語モデル講座 2025」で学んだ内容を土台に、
-講義で数式として提示される概念を **動くコードと数値実験に落とし込み**、
+東京大学 松尾・岩澤研究室「大規模言語モデル講座（全8回）」で学んだ内容を土台に、
+数式として学んだ概念を **動くコードと数値実験に落とし込み**、
 理解の解像度を上げることを目的としています。
+
+> **本リポジトリは受講内容をもとに独自に再実装したもので、講座の配布物は含まない。**
+> 講義スライド・配布ノートブック・配布データ・宿題や確認テストの問題と解答は掲載していません。
+> 説明文は自分の言葉で書き、コードはすべてゼロから書き直したオリジナル実装です。
+
+### 講座の構成と本リポジトリの対応
+
+| 回 | テーマ | 主なトピック | 本リポジトリ |
+|----|--------|-------------|-------------|
+| 1 | 講座概要 | 生成確率としての言語モデル、自己回帰、Transformer、スケール則、基盤モデル、ロボット応用（RT-1, π0） | — |
+| 2 | 推論 | Zero/Few-shot、CoT、Self-Consistency、Self-Refine、デコーディング（Greedy / Top-k / Top-p / Temperature）、LLM-as-a-Judge | 未実装 |
+| 3 | 事前学習 | Attention（Q/K/V）、Causal Mask、Multi-Head、FFN、LayerNorm、次トークン予測 | [day3/](day3) |
+| 4 | スケール則 | L(N, D, C) のべき乗則、FLOPs ≈ 6ND、Chinchilla（D ≈ 20N）、μP、推論時スケーリング | [day4/](day4) |
+| 5 | 事前学習（上級） | Sparse Attention、FlashAttention、MoE、量子化（LLM.int8()）、分散学習 | 未実装 |
+| 6 | ファインチューニング | Instruction Tuning、SFT、PEFT（LoRA / Adapter / Prompt Tuning / BitFit） | [day6/](day6) |
+| 7 | 強化学習 | RLHF（報酬モデル＋PPO）、DPO、RLVR、GRPO、DAPO、Dr. GRPO | [day7/](day7) |
+| 8 | データと評価 | 前処理（URL フィルタ・言語判定・MinHash 重複除去）、Self-Instruct、ベンチマーク、LLM-as-a-Judge、Chatbot Arena | [day8/](day8) |
+
+**最終課題**: 小規模 LLM に QLoRA → DPO を適用し、LLM-as-a-Judge による安全性スコアを **Base < QLoRA < DPO** の順に改善した（課題のコードと配布データは規約により非掲載）。
 
 ---
 
@@ -94,7 +113,7 @@ Perplexity・MinHash による重複除去・データ汚染の実演を実装�
 
 ```bash
 git clone https://github.com/akito222/portfolio.git
-cd portfolio/LLM_Mastuo_2025
+cd portfolio/llm-from-scratch-notes
 bash setup.sh                 # venv 作成 + 依存インストール
 source .venv/bin/activate
 python day3/day3_transformer.py   # 例: Transformer を学習・生成
@@ -108,8 +127,8 @@ python day3/day3_transformer.py   # 例: Transformer を学習・生成
 
 ## この学習記録について
 
-本リポジトリは、松尾研 LLM 講座の内容を土台に、**理解を深めるための追加実験を自分で設計・実装**
-したものです。講義資料そのもの（著作物）は含めず、学んだ概念を自分のコードと言葉で再構成しています。
+本リポジトリは受講内容をもとに独自に再実装したもので、講座の配布物は含みません。
+**理解を深めるための追加実験を自分で設計・実装**し、学んだ概念を自分のコードと言葉で再構成しています。
 「読んで分かった気になる」で終わらせず、**手を動かして数値で確かめる**ことを一貫して重視しました。
 
 ## ライセンス
