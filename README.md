@@ -396,7 +396,7 @@ flowchart LR
 | MoveIt2 / 経路計画      | 〜1年   | 初中級 | SIA5 の Pick&Place を OMPL/RRTConnect で計画、C++ ノード実装 |
 | C / C++            | —     | 初級  | MoveIt2 の経路計画ノード（軌道 CSV 出力）を C++ で実装             |
 | データセット設計・評価         | 〜1年   | 初中級 | データリーク検出→grouped split 再分割、seed 固定 ablation 実施   |
-| AWS（S3 / Glue / Athena / Bedrock） | — | 初級 | 分析基盤を CloudFormation 4 スタックで IaC 化、Parquet 化で Athena のスキャン量を 0.13% に削減 |
+| AWS（S3 / Glue / Athena / Bedrock） | 1ヶ月 | 初級 | 分析基盤を CloudFormation 4 スタックで IaC 化、Parquet 化で Athena のスキャン量を 0.13% に削減 |
 | SQL | — | 初級 | Athena で集計・結合・HAVING・information_schema、少数サンプルの偏りを読んで改善 |
 
 ---
@@ -560,7 +560,7 @@ flowchart LR
 
 ---
 
-### ☁️ AWS `経験 —`
+### ☁️ AWS `経験 1ヶ月`
 
 **レベル**: 初級 ／ **動作環境**: 東京リージョン / AWS CLI v2 / CloudFormation
 
