@@ -303,7 +303,7 @@ UN主催「Global Hackathon on AI for Digital Trade Regulatory Analysis」提出
 ---
 
 ### 7. AWS Review Analytics Pipeline — データ分析基盤の IaC 化
-**[`akito222/aws-review-analytics-pipeline`](https://github.com/akito222/aws-review-analytics-pipeline)**
+**[`aws-review-analytics-pipeline/`](./aws-review-analytics-pipeline)**（元リポジトリ: [akito222/aws-review-analytics-pipeline](https://github.com/akito222/aws-review-analytics-pipeline)）
 
 > **位置づけ（データ活用の学習 ③蓄積・加工・分析・可視化）**: UN ハッカソンで知った流れのうち、**データの蓄積・加工・分析・可視化**を、AWS 上で一度自分の手でできるかを確かめたプロジェクト。
 

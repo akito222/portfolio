@@ -1,0 +1,186 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  [4/4] Automation - (a) scheduled run with a cron expression and
+  (b) event-driven run when a new file lands in S3:
+  S3 (Object Created) -> EventBridge rule -> Glue workflow (EVENT trigger)
+  -> crawler -> (on success) Parquet ETL job.
+
+Parameters:
+  Prefix:
+    Type: String
+    Default: review-analytics
+  ScheduleExpression:
+    Type: String
+    Default: cron(0 15 * * ? *)
+    Description: >-
+      Glue cron (6 fields, UTC). Default 15:00 UTC = 00:00 JST every day.
+  EnableSchedule:
+    Type: String
+    Default: "false"
+    AllowedValues: ["true", "false"]
+    Description: Activate the scheduled trigger on creation (off by default to avoid surprise cost)
+  EventBatchSize:
+    Type: Number
+    Default: 1
+    MinValue: 1
+    MaxValue: 100
+    Description: Start the workflow after this many S3 events ...
+  EventBatchWindowSeconds:
+    Type: Number
+    Default: 300
+    MinValue: 1
+    MaxValue: 900
+    Description: ... or this many seconds after the first event, whichever comes first
+
+Conditions:
+  ScheduleOn: !Equals [!Ref EnableSchedule, "true"]
+
+Resources:
+  # ===========================================================================
+  # (a) Scheduled: cron -> crawler -> ETL
+  # ===========================================================================
+  ScheduledWorkflow:
+    Type: AWS::Glue::Workflow
+    Properties:
+      Name: !Sub "${Prefix}-wf-scheduled"
+      Description: Nightly catalog refresh + Parquet conversion
+      MaxConcurrentRuns: 1
+
+  ScheduledStartTrigger:
+    Type: AWS::Glue::Trigger
+    Properties:
+      Name: !Sub "${Prefix}-trg-scheduled-start"
+      WorkflowName: !Ref ScheduledWorkflow
+      Type: SCHEDULED
+      Schedule: !Ref ScheduleExpression
+      StartOnCreation: !If [ScheduleOn, true, false]
+      Actions:
+        - CrawlerName:
+            Fn::ImportValue: !Sub "${Prefix}-RawCrawlerName"
+
+  ScheduledEtlTrigger:
+    Type: AWS::Glue::Trigger
+    Properties:
+      Name: !Sub "${Prefix}-trg-scheduled-etl"
+      WorkflowName: !Ref ScheduledWorkflow
+      Type: CONDITIONAL
+      StartOnCreation: true
+      Predicate:
+        Logical: AND
+        Conditions:
+          - LogicalOperator: EQUALS
+            CrawlerName:
+              Fn::ImportValue: !Sub "${Prefix}-RawCrawlerName"
+            CrawlState: SUCCEEDED
+      Actions:
+        - JobName:
+            Fn::ImportValue: !Sub "${Prefix}-ParquetEtlJobName"
+
+  # DataBrew jobs are not Glue workflow nodes; they have their own scheduler.
+  RecipeJobSchedule:
+    Type: AWS::DataBrew::Schedule
+    Condition: ScheduleOn
+    Properties:
+      Name: !Sub "${Prefix}-recipe-nightly"
+      # DataBrew uses the same 6-field cron syntax
+      CronExpression: !Ref ScheduleExpression
+      JobNames:
+        - !Sub "${Prefix}-recipe-reviews"
+
+  # ===========================================================================
+  # (b) Event-driven: S3 put -> EventBridge -> Glue workflow
+  #
+  # A Glue crawler cannot be an EventBridge target directly. The target is a
+  # Glue *workflow* whose start trigger has Type EVENT; EventBridge calls
+  # glue:NotifyEvent on the workflow and the trigger fires according to the
+  # batching condition.
+  # ===========================================================================
+  EventWorkflow:
+    Type: AWS::Glue::Workflow
+    Properties:
+      Name: !Sub "${Prefix}-wf-on-upload"
+      Description: Runs when a new CSV is put under raw/amazon_reviews/
+      MaxConcurrentRuns: 1
+
+  EventStartTrigger:
+    Type: AWS::Glue::Trigger
+    Properties:
+      Name: !Sub "${Prefix}-trg-event-start"
+      WorkflowName: !Ref EventWorkflow
+      Type: EVENT
+      EventBatchingCondition:
+        BatchSize: !Ref EventBatchSize
+        BatchWindow: !Ref EventBatchWindowSeconds
+      Actions:
+        - CrawlerName:
+            Fn::ImportValue: !Sub "${Prefix}-RawCrawlerName"
+
+  EventEtlTrigger:
+    Type: AWS::Glue::Trigger
+    Properties:
+      Name: !Sub "${Prefix}-trg-event-etl"
+      WorkflowName: !Ref EventWorkflow
+      Type: CONDITIONAL
+      StartOnCreation: true
+      Predicate:
+        Logical: AND
+        Conditions:
+          - LogicalOperator: EQUALS
+            CrawlerName:
+              Fn::ImportValue: !Sub "${Prefix}-RawCrawlerName"
+            CrawlState: SUCCEEDED
+      Actions:
+        - JobName:
+            Fn::ImportValue: !Sub "${Prefix}-ParquetEtlJobName"
+
+  EventBridgeToGlueRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${Prefix}-events-to-glue-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: notify-glue-workflow
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: glue:notifyEvent
+                Resource: !Sub "arn:${AWS::Partition}:glue:${AWS::Region}:${AWS::AccountId}:workflow/${EventWorkflow}"
+
+  S3PutRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Sub "${Prefix}-s3-put-raw-reviews"
+      Description: New object under raw/amazon_reviews/ -> start Glue workflow
+      State: ENABLED
+      # Requires EventBridge notifications on the bucket (enabled in 01-datalake.yaml)
+      EventPattern:
+        source:
+          - aws.s3
+        detail-type:
+          - Object Created
+        detail:
+          bucket:
+            name:
+              - Fn::ImportValue: !Sub "${Prefix}-BucketName"
+          object:
+            key:
+              - prefix: raw/amazon_reviews/
+      Targets:
+        - Id: glue-workflow
+          Arn: !Sub "arn:${AWS::Partition}:glue:${AWS::Region}:${AWS::AccountId}:workflow/${EventWorkflow}"
+          RoleArn: !GetAtt EventBridgeToGlueRole.Arn
+
+Outputs:
+  ScheduledWorkflowName:
+    Value: !Ref ScheduledWorkflow
+  EventWorkflowName:
+    Value: !Ref EventWorkflow
+  S3PutRuleName:
+    Value: !Ref S3PutRule

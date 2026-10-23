@@ -1,0 +1,232 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  [3/4] Processing jobs - DataBrew profile / recipe jobs (recipe reused on 2 datasets),
+  Glue ETL job (CSV -> partitioned Parquet) and a Glue Python shell job that calls
+  Amazon Bedrock to analyse review text.
+
+Parameters:
+  Prefix:
+    Type: String
+    Default: review-analytics
+  RecipeVersion:
+    Type: String
+    Default: "1.0"
+    Description: Published DataBrew recipe version to pin (bump after re-publishing)
+  BedrockModelId:
+    Type: String
+    Default: amazon.nova-lite-v1:0
+    Description: >-
+      Bedrock model ID (or inference profile ID such as apac.amazon.nova-lite-v1:0).
+      Model access must be enabled in the Bedrock console beforehand.
+  AiMaxRecords:
+    Type: Number
+    Default: 100
+    Description: Number of reviews sent to Bedrock per run (cost guard)
+
+Resources:
+  # ---------------------------------------------------------------------------
+  # DataBrew
+  # ---------------------------------------------------------------------------
+  ProfileJob:
+    Type: AWS::DataBrew::Job
+    Properties:
+      Name: !Sub "${Prefix}-profile"
+      Type: PROFILE
+      DatasetName:
+        Fn::ImportValue: !Sub "${Prefix}-ReviewsDatasetName"
+      RoleArn:
+        Fn::ImportValue: !Sub "${Prefix}-DataBrewRoleArn"
+      MaxCapacity: 2
+      JobSample:
+        Mode: FULL_DATASET
+      OutputLocation:
+        Bucket:
+          Fn::ImportValue: !Sub "${Prefix}-BucketName"
+        Key: databrew-profile/
+
+  RecipeJob:
+    Type: AWS::DataBrew::Job
+    Properties:
+      Name: !Sub "${Prefix}-recipe-reviews"
+      Type: RECIPE
+      DatasetName:
+        Fn::ImportValue: !Sub "${Prefix}-ReviewsDatasetName"
+      Recipe:
+        Name:
+          Fn::ImportValue: !Sub "${Prefix}-RecipeName"
+        Version: !Ref RecipeVersion
+      RoleArn:
+        Fn::ImportValue: !Sub "${Prefix}-DataBrewRoleArn"
+      MaxCapacity: 2
+      Outputs:
+        - Location:
+            Bucket:
+              Fn::ImportValue: !Sub "${Prefix}-BucketName"
+            Key: curated/databrew/reviews/
+          Format: PARQUET
+          CompressionFormat: SNAPPY
+          # Without Overwrite, every run creates a new "<job>_<timestamp>/" folder,
+          # which the crawler would then treat as partitions / separate tables.
+          Overwrite: true
+
+  # Additional task: reuse the SAME recipe version on different data.
+  # What changes: only the dataset (input) and the output location.
+  RecipeJobAdd:
+    Type: AWS::DataBrew::Job
+    Properties:
+      Name: !Sub "${Prefix}-recipe-reviews-add"
+      Type: RECIPE
+      DatasetName:
+        Fn::ImportValue: !Sub "${Prefix}-ReviewsAddDatasetName"
+      Recipe:
+        Name:
+          Fn::ImportValue: !Sub "${Prefix}-RecipeName"
+        Version: !Ref RecipeVersion
+      RoleArn:
+        Fn::ImportValue: !Sub "${Prefix}-DataBrewRoleArn"
+      MaxCapacity: 2
+      Outputs:
+        - Location:
+            Bucket:
+              Fn::ImportValue: !Sub "${Prefix}-BucketName"
+            Key: curated/databrew/reviews_add/
+          Format: PARQUET
+          CompressionFormat: SNAPPY
+          Overwrite: true
+
+  # ---------------------------------------------------------------------------
+  # Glue ETL (code version of the Glue Studio visual job)
+  #   Catalog table amazon_reviews -> drop total_votes / vine
+  #   -> Parquet (Snappy), partitioned by product_category -> catalog table reviews_parquet
+  # ---------------------------------------------------------------------------
+  ParquetEtlJob:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: !Sub "${Prefix}-etl-parquet"
+      Description: CSV -> partitioned Parquet (column pruning + partition pruning for Athena)
+      Role:
+        Fn::ImportValue: !Sub "${Prefix}-GlueServiceRoleArn"
+      GlueVersion: "5.0"
+      WorkerType: G.1X
+      NumberOfWorkers: 2
+      MaxRetries: 1
+      Timeout: 30
+      ExecutionProperty:
+        MaxConcurrentRuns: 1
+      Command:
+        Name: glueetl
+        PythonVersion: "3"
+        ScriptLocation: !Sub
+          - "s3://${Bucket}/glue-assets/scripts/reviews_to_parquet.py"
+          - Bucket:
+              Fn::ImportValue: !Sub "${Prefix}-BucketName"
+      DefaultArguments:
+        "--job-language": python
+        # Bookmarks: on each run only files not processed before are read.
+        # This is what makes the event-driven workflow incremental.
+        "--job-bookmark-option": job-bookmark-enable
+        "--enable-metrics": "true"
+        "--enable-continuous-cloudwatch-log": "true"
+        "--TempDir": !Sub
+          - "s3://${Bucket}/glue-assets/temp/"
+          - Bucket:
+              Fn::ImportValue: !Sub "${Prefix}-BucketName"
+        "--source_database":
+          Fn::ImportValue: !Sub "${Prefix}-DatabaseName"
+        "--source_table": amazon_reviews
+        "--target_database":
+          Fn::ImportValue: !Sub "${Prefix}-DatabaseName"
+        "--target_table": reviews_parquet
+        "--target_path": !Sub
+          - "s3://${Bucket}/curated/reviews_parquet/"
+          - Bucket:
+              Fn::ImportValue: !Sub "${Prefix}-BucketName"
+
+  # ---------------------------------------------------------------------------
+  # Bedrock batch analysis as a Glue Python shell job
+  # (the hands-on used an interactive notebook; a job can be scheduled / chained)
+  # ---------------------------------------------------------------------------
+  BedrockJobRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${Prefix}-bedrock-job-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: glue.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+      Policies:
+        - PolicyName: bedrock-and-bucket
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - bedrock:InvokeModel
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:bedrock:*::foundation-model/*"
+                  - !Sub "arn:${AWS::Partition}:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/*"
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource:
+                  Fn::ImportValue: !Sub "${Prefix}-BucketArn"
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                Resource: !Sub
+                  - "${BucketArn}/*"
+                  - BucketArn:
+                      Fn::ImportValue: !Sub "${Prefix}-BucketArn"
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                Resource: !Sub
+                  - "${BucketArn}/ai/*"
+                  - BucketArn:
+                      Fn::ImportValue: !Sub "${Prefix}-BucketArn"
+
+  BedrockAnalysisJob:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: !Sub "${Prefix}-bedrock-analysis"
+      Description: Summarise reviews and detect star-rating vs sentiment gaps with Bedrock
+      Role: !GetAtt BedrockJobRole.Arn
+      MaxCapacity: 0.0625
+      MaxRetries: 0
+      Timeout: 60
+      Command:
+        Name: pythonshell
+        PythonVersion: "3.9"
+        ScriptLocation: !Sub
+          - "s3://${Bucket}/glue-assets/scripts/analyze_reviews.py"
+          - Bucket:
+              Fn::ImportValue: !Sub "${Prefix}-BucketName"
+      DefaultArguments:
+        # Glue's bundled boto3 is too old for the Bedrock Converse API
+        "--additional-python-modules": "boto3>=1.35.0"
+        "--bucket":
+          Fn::ImportValue: !Sub "${Prefix}-BucketName"
+        "--input-key": raw/amazon_reviews/amazon_reviews_5.csv
+        "--output-key": ai/ai_reviews_output/ai_reviews.jsonl
+        "--model-id": !Ref BedrockModelId
+        "--max-records": !Ref AiMaxRecords
+        "--sample": stratified
+
+Outputs:
+  RecipeJobName:
+    Value: !Ref RecipeJob
+  RecipeJobAddName:
+    Value: !Ref RecipeJobAdd
+  ParquetEtlJobName:
+    Value: !Ref ParquetEtlJob
+    Export:
+      Name: !Sub "${Prefix}-ParquetEtlJobName"
+  BedrockAnalysisJobName:
+    Value: !Ref BedrockAnalysisJob
+    Export:
+      Name: !Sub "${Prefix}-BedrockAnalysisJobName"

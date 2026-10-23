@@ -1,0 +1,141 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  [2/4] AWS Glue DataBrew - IAM role, datasets (original + additional data) and the
+  transformation recipe. After deploying, publish the recipe once
+  (scripts/deploy.sh does this) so that recipe jobs in 03-processing.yaml can pin a version.
+
+Parameters:
+  Prefix:
+    Type: String
+    Default: review-analytics
+
+Resources:
+  DataBrewRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${Prefix}-databrew-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: databrew.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSGlueDataBrewServiceRole
+      Policies:
+        - PolicyName: data-bucket-access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                  - s3:GetBucketLocation
+                Resource:
+                  Fn::ImportValue: !Sub "${Prefix}-BucketArn"
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource: !Sub
+                  - "${BucketArn}/*"
+                  - BucketArn:
+                      Fn::ImportValue: !Sub "${Prefix}-BucketArn"
+
+  # A DataBrew *dataset* is just a pointer (location + format) to the data.
+  # Reusing a recipe on other data = create another dataset, then run a recipe job
+  # that combines (new dataset) x (same published recipe version).
+  ReviewsDataset:
+    Type: AWS::DataBrew::Dataset
+    Properties:
+      Name: !Sub "${Prefix}-reviews"
+      Format: CSV
+      FormatOptions:
+        Csv:
+          Delimiter: ","
+          HeaderRow: true
+      Input:
+        S3InputDefinition:
+          Bucket:
+            Fn::ImportValue: !Sub "${Prefix}-BucketName"
+          Key: raw/amazon_reviews/amazon_reviews_5.csv
+
+  ReviewsAddDataset:
+    Type: AWS::DataBrew::Dataset
+    Properties:
+      Name: !Sub "${Prefix}-reviews-add"
+      Format: CSV
+      FormatOptions:
+        Csv:
+          Delimiter: ","
+          HeaderRow: true
+      Input:
+        S3InputDefinition:
+          Bucket:
+            Fn::ImportValue: !Sub "${Prefix}-BucketName"
+          Key: raw/amazon_reviews_add/amazon_reviews_add.csv
+
+  # Same steps as the console hands-on (also exported as databrew/recipe.json).
+  ReviewsRecipe:
+    Type: AWS::DataBrew::Recipe
+    Properties:
+      Name: !Sub "${Prefix}-reviews-recipe"
+      Description: lower-case title, category / product mean rating, one-hot verified_purchase
+      Steps:
+        # 1. product_title -> lower case (new column, original kept)
+        - Action:
+            Operation: LOWER
+            Parameters:
+              SourceColumn: product_title
+              TargetColumn: product_title_lower
+        # 2. mean star_rating per product_category, appended as a new column
+        #    (useNewDataFrame=false == "group as new column" in the console)
+        - Action:
+            Operation: GROUP_BY
+            Parameters:
+              SourceColumns: '["product_category"]'
+              GroupByAggFunctionOptions: '[{"sourceColumnName":"star_rating","targetColumnName":"category_star_rating_mean","targetColumnDataType":"double","functionName":"MEAN"}]'
+              UseNewDataFrame: "false"
+        # 3. mean star_rating per product_id
+        - Action:
+            Operation: GROUP_BY
+            Parameters:
+              SourceColumns: '["product_id"]'
+              GroupByAggFunctionOptions: '[{"sourceColumnName":"star_rating","targetColumnName":"product_star_rating_mean","targetColumnDataType":"double","functionName":"MEAN"}]'
+              UseNewDataFrame: "false"
+        # 4. verified_purchase (Y/N) -> verified_purchase_Y / verified_purchase_N
+        - Action:
+            Operation: ONE_HOT_ENCODING
+            Parameters:
+              SourceColumn: verified_purchase
+        # 5-6. give the generated columns readable names
+        - Action:
+            Operation: RENAME
+            Parameters:
+              SourceColumn: verified_purchase_N
+              TargetColumn: verified_purchase_No
+        - Action:
+            Operation: RENAME
+            Parameters:
+              SourceColumn: verified_purchase_Y
+              TargetColumn: verified_purchase_Yes
+
+Outputs:
+  DataBrewRoleArn:
+    Value: !GetAtt DataBrewRole.Arn
+    Export:
+      Name: !Sub "${Prefix}-DataBrewRoleArn"
+  ReviewsDatasetName:
+    Value: !Ref ReviewsDataset
+    Export:
+      Name: !Sub "${Prefix}-ReviewsDatasetName"
+  ReviewsAddDatasetName:
+    Value: !Ref ReviewsAddDataset
+    Export:
+      Name: !Sub "${Prefix}-ReviewsAddDatasetName"
+  RecipeName:
+    Value: !Ref ReviewsRecipe
+    Export:
+      Name: !Sub "${Prefix}-RecipeName"

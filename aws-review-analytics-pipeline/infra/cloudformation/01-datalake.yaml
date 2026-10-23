@@ -1,0 +1,247 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  [1/4] Data lake foundation - S3 bucket, Glue Data Catalog (database / classifier / crawlers),
+  Glue service role and Athena workgroup for the Amazon review analytics pipeline.
+
+Parameters:
+  Prefix:
+    Type: String
+    Default: review-analytics
+    AllowedPattern: "^[a-z0-9-]{3,30}$"
+    Description: Resource name prefix (lowercase, hyphen allowed)
+  DatabaseName:
+    Type: String
+    Default: review_analytics
+    AllowedPattern: "^[a-z0-9_]{1,64}$"
+    Description: >-
+      Glue database name. Underscore only, so that Athena / Spark can reference it
+      without double quotes.
+  AthenaBytesScannedCutoff:
+    Type: Number
+    Default: 1073741824
+    MinValue: 10000000
+    Description: Per-query scan limit for the Athena workgroup (bytes). Default 1 GiB as a cost guard.
+
+Resources:
+  # ---------------------------------------------------------------------------
+  # S3: single bucket, zones separated by prefix
+  #   raw/        ... ingested CSV (never modified)
+  #   curated/    ... DataBrew / Glue ETL output (Parquet)
+  #   ai/         ... Bedrock analysis output (JSONL)
+  #   athena-results/, glue-assets/, databrew-profile/
+  # ---------------------------------------------------------------------------
+  DataBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${Prefix}-${AWS::AccountId}-${AWS::Region}"
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      # Send S3 events (Object Created etc.) to EventBridge. Required by 04-automation.yaml.
+      NotificationConfiguration:
+        EventBridgeConfiguration:
+          EventBridgeEnabled: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: expire-athena-results
+            Status: Enabled
+            Prefix: athena-results/
+            ExpirationInDays: 30
+          - Id: abort-incomplete-mpu
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 7
+
+  DataBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref DataBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: DenyInsecureTransport
+            Effect: Deny
+            Principal: "*"
+            Action: "s3:*"
+            Resource:
+              - !GetAtt DataBucket.Arn
+              - !Sub "${DataBucket.Arn}/*"
+            Condition:
+              Bool:
+                aws:SecureTransport: "false"
+
+  # ---------------------------------------------------------------------------
+  # IAM role for Glue crawlers / ETL jobs (least privilege to this bucket only)
+  # ---------------------------------------------------------------------------
+  GlueServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${Prefix}-glue-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: glue.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+      Policies:
+        - PolicyName: data-bucket-access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                  - s3:GetBucketLocation
+                Resource: !GetAtt DataBucket.Arn
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource: !Sub "${DataBucket.Arn}/*"
+
+  # ---------------------------------------------------------------------------
+  # Glue Data Catalog
+  # ---------------------------------------------------------------------------
+  GlueDatabase:
+    Type: AWS::Glue::Database
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Name: !Ref DatabaseName
+        Description: Amazon review analytics - raw / curated / AI tables
+
+  # The built-in CSV classifier picks LazySimpleSerDe, which does NOT understand
+  # quoted fields. A few product titles contain commas ("..., ...") and are quoted,
+  # which would shift columns. A custom classifier with a quote symbol makes the
+  # crawler use OpenCSVSerDe instead.
+  CsvClassifier:
+    Type: AWS::Glue::Classifier
+    Properties:
+      CsvClassifier:
+        Name: !Sub "${Prefix}-csv-quoted"
+        Delimiter: ","
+        QuoteSymbol: '"'
+        ContainsHeader: PRESENT
+        AllowSingleColumn: false
+
+  RawReviewsCrawler:
+    Type: AWS::Glue::Crawler
+    Properties:
+      Name: !Sub "${Prefix}-crawler-raw"
+      Description: Catalog raw review CSV -> table amazon_reviews
+      Role: !GetAtt GlueServiceRole.Arn
+      DatabaseName: !Ref GlueDatabase
+      Classifiers:
+        - !Ref CsvClassifier
+      Targets:
+        S3Targets:
+          - Path: !Sub "s3://${DataBucket}/raw/amazon_reviews/"
+      # New files are added to the SAME folder (raw/amazon_reviews/), so
+      # CRAWL_NEW_FOLDERS_ONLY would miss them. Re-crawl everything (data is small).
+      RecrawlPolicy:
+        RecrawlBehavior: CRAWL_EVERYTHING
+      SchemaChangePolicy:
+        UpdateBehavior: UPDATE_IN_DATABASE
+        DeleteBehavior: LOG
+      Configuration: |
+        {"Version":1.0,"Grouping":{"TableGroupingPolicy":"CombineCompatibleSchemas"}}
+
+  DataBrewOutputCrawler:
+    Type: AWS::Glue::Crawler
+    Properties:
+      Name: !Sub "${Prefix}-crawler-databrew"
+      Description: Catalog DataBrew recipe-job output (Parquet)
+      Role: !GetAtt GlueServiceRole.Arn
+      DatabaseName: !Ref GlueDatabase
+      TablePrefix: databrew_
+      Targets:
+        S3Targets:
+          - Path: !Sub "s3://${DataBucket}/curated/databrew/reviews/"
+          - Path: !Sub "s3://${DataBucket}/curated/databrew/reviews_add/"
+      SchemaChangePolicy:
+        UpdateBehavior: UPDATE_IN_DATABASE
+        DeleteBehavior: LOG
+
+  AiOutputCrawler:
+    Type: AWS::Glue::Crawler
+    Properties:
+      Name: !Sub "${Prefix}-crawler-ai"
+      Description: Catalog Bedrock analysis output (JSONL) -> table ai_reviews_output
+      Role: !GetAtt GlueServiceRole.Arn
+      DatabaseName: !Ref GlueDatabase
+      Targets:
+        S3Targets:
+          - Path: !Sub "s3://${DataBucket}/ai/ai_reviews_output/"
+      SchemaChangePolicy:
+        UpdateBehavior: UPDATE_IN_DATABASE
+        DeleteBehavior: LOG
+
+  # ---------------------------------------------------------------------------
+  # Athena workgroup: result location + encryption are enforced so that users
+  # cannot skip the "query result location" setup, and a per-query scan limit
+  # protects against accidental full scans.
+  # ---------------------------------------------------------------------------
+  AthenaWorkGroup:
+    Type: AWS::Athena::WorkGroup
+    Properties:
+      Name: !Sub "${Prefix}-wg"
+      Description: Workgroup for review analytics
+      State: ENABLED
+      RecursiveDeleteOption: true
+      WorkGroupConfiguration:
+        EnforceWorkGroupConfiguration: true
+        PublishCloudWatchMetricsEnabled: true
+        BytesScannedCutoffPerQuery: !Ref AthenaBytesScannedCutoff
+        EngineVersion:
+          SelectedEngineVersion: "Athena engine version 3"
+        ResultConfiguration:
+          OutputLocation: !Sub "s3://${DataBucket}/athena-results/"
+          EncryptionConfiguration:
+            EncryptionOption: SSE_S3
+
+Outputs:
+  BucketName:
+    Value: !Ref DataBucket
+    Export:
+      Name: !Sub "${Prefix}-BucketName"
+  BucketArn:
+    Value: !GetAtt DataBucket.Arn
+    Export:
+      Name: !Sub "${Prefix}-BucketArn"
+  DatabaseName:
+    Value: !Ref GlueDatabase
+    Export:
+      Name: !Sub "${Prefix}-DatabaseName"
+  GlueServiceRoleArn:
+    Value: !GetAtt GlueServiceRole.Arn
+    Export:
+      Name: !Sub "${Prefix}-GlueServiceRoleArn"
+  RawCrawlerName:
+    Value: !Ref RawReviewsCrawler
+    Export:
+      Name: !Sub "${Prefix}-RawCrawlerName"
+  DataBrewCrawlerName:
+    Value: !Ref DataBrewOutputCrawler
+    Export:
+      Name: !Sub "${Prefix}-DataBrewCrawlerName"
+  AiCrawlerName:
+    Value: !Ref AiOutputCrawler
+    Export:
+      Name: !Sub "${Prefix}-AiCrawlerName"
+  AthenaWorkGroupName:
+    Value: !Ref AthenaWorkGroup
+    Export:
+      Name: !Sub "${Prefix}-AthenaWorkGroup"

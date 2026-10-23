@@ -1,0 +1,57 @@
+[
+  {
+    "Action": {
+      "Operation": "LOWER",
+      "Parameters": {
+        "sourceColumn": "product_title",
+        "targetColumn": "product_title_lower"
+      }
+    }
+  },
+  {
+    "Action": {
+      "Operation": "GROUP_BY",
+      "Parameters": {
+        "sourceColumns": "[\"product_category\"]",
+        "groupByAggFunctionOptions": "[{\"sourceColumnName\":\"star_rating\",\"targetColumnName\":\"category_star_rating_mean\",\"targetColumnDataType\":\"double\",\"functionName\":\"MEAN\"}]",
+        "useNewDataFrame": "false"
+      }
+    }
+  },
+  {
+    "Action": {
+      "Operation": "GROUP_BY",
+      "Parameters": {
+        "sourceColumns": "[\"product_id\"]",
+        "groupByAggFunctionOptions": "[{\"sourceColumnName\":\"star_rating\",\"targetColumnName\":\"product_star_rating_mean\",\"targetColumnDataType\":\"double\",\"functionName\":\"MEAN\"}]",
+        "useNewDataFrame": "false"
+      }
+    }
+  },
+  {
+    "Action": {
+      "Operation": "ONE_HOT_ENCODING",
+      "Parameters": {
+        "sourceColumn": "verified_purchase"
+      }
+    }
+  },
+  {
+    "Action": {
+      "Operation": "RENAME",
+      "Parameters": {
+        "sourceColumn": "verified_purchase_N",
+        "targetColumn": "verified_purchase_No"
+      }
+    }
+  },
+  {
+    "Action": {
+      "Operation": "RENAME",
+      "Parameters": {
+        "sourceColumn": "verified_purchase_Y",
+        "targetColumn": "verified_purchase_Yes"
+      }
+    }
+  }
+]

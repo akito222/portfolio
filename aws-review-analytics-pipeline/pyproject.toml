@@ -1,0 +1,20 @@
+[project]
+name = "aws-review-analytics-pipeline"
+version = "0.1.0"
+description = "Amazon review analytics on AWS (S3 / Glue / DataBrew / Athena / Bedrock / Quick) with IaC and a local reproduction"
+requires-python = ">=3.9"
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"   # the Bedrock job runs on Glue Python shell 3.9
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B"]
+ignore = ["E501"]  # long Japanese strings; line length is handled by ruff format
+
+[tool.ruff.lint.per-file-ignores]
+"local/*.py" = ["E402"]
+"tests/*.py" = ["E402"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
