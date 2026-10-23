@@ -397,7 +397,7 @@ flowchart LR
 | C / C++            | —     | 初級  | MoveIt2 の経路計画ノード（軌道 CSV 出力）を C++ で実装             |
 | データセット設計・評価         | 〜1年   | 初中級 | データリーク検出→grouped split 再分割、seed 固定 ablation 実施   |
 | AWS（S3 / Glue / Athena / Bedrock） | 1ヶ月 | 初級 | 分析基盤を CloudFormation 4 スタックで IaC 化、Parquet 化で Athena のスキャン量を 0.13% に削減 |
-| SQL | — | 初級 | Athena で集計・結合・HAVING・information_schema、少数サンプルの偏りを読んで改善 |
+| SQL | 1ヶ月 | 初級 | Athena で集計・結合・HAVING・information_schema、少数サンプルの偏りを読んで改善 |
 
 ---
 
